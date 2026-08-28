@@ -1,0 +1,14 @@
+{
+  "name": "resomap-flow-audit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ResoMap 商家訂閱流程稽核 — 21 步實測紀錄、問題清單與地圖服務遷移評估",
+  "scripts": {
+    "prep": "node build/prep.js && node build/prep2.js && node build/prep3.js && node build/prep4.js",
+    "deck": "node build/deck.js"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.1",
+    "sharp": "^0.35.4"
+  }
+}

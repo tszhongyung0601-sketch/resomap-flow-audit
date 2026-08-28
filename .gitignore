@@ -1,0 +1,6 @@
+node_modules/
+package-lock.json
+*.log
+.asar-staging/
+build-out/
+render/
