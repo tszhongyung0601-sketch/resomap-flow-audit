@@ -1,0 +1,1080 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    *, *::before, *::after { box-sizing: border-box; }
+    img, svg { max-width: 100%; height: auto; }
+    a { color: inherit; }
+</style>
+<title>ResoMap 訂閱流程稽核</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap">
+
+<style>
+  :root {
+    --ground:      #EDEFF2;
+    --surface:     #FFFFFF;
+    --surface-2:   #F5F7F9;
+    --ink:         #14171C;
+    --ink-mid:     #454E5A;
+    --ink-soft:    #6B7684;
+    --line:        #D2D8DF;
+    --line-soft:   #E3E7EC;
+    --accent:      #0E4749;
+    --accent-mid:  #17696B;
+    --accent-wash: #E2EDEC;
+    --sev-1:       #9E1B14;
+    --sev-1-wash:  #F7E4E2;
+    --sev-2:       #A85C0C;
+    --sev-2-wash:  #F8ECDC;
+    --sev-3:       #4A5768;
+    --sev-3-wash:  #E7EAEF;
+    --brand:       #D2782F;
+
+    --f-serif: "Noto Serif TC", "Songti TC", "PMingLiU", Georgia, serif;
+    --f-sans:  "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    --f-mono:  "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #101418;
+      --surface:     #171C22;
+      --surface-2:   #1D242B;
+      --ink:         #E7EAEE;
+      --ink-mid:     #B3BCC6;
+      --ink-soft:    #8B96A3;
+      --line:        #2C343D;
+      --line-soft:   #242B33;
+      --accent:      #5FBDB2;
+      --accent-mid:  #7FCFC5;
+      --accent-wash: #16302F;
+      --sev-1:       #F0837A;
+      --sev-1-wash:  #33191A;
+      --sev-2:       #E5A44F;
+      --sev-2-wash:  #322414;
+      --sev-3:       #97A5B5;
+      --sev-3-wash:  #232A33;
+      --brand:       #E8965A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #101418;
+    --surface:     #171C22;
+    --surface-2:   #1D242B;
+    --ink:         #E7EAEE;
+    --ink-mid:     #B3BCC6;
+    --ink-soft:    #8B96A3;
+    --line:        #2C343D;
+    --line-soft:   #242B33;
+    --accent:      #5FBDB2;
+    --accent-mid:  #7FCFC5;
+    --accent-wash: #16302F;
+    --sev-1:       #F0837A;
+    --sev-1-wash:  #33191A;
+    --sev-2:       #E5A44F;
+    --sev-2-wash:  #322414;
+    --sev-3:       #97A5B5;
+    --sev-3-wash:  #232A33;
+    --brand:       #E8965A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-sans);
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    padding: 64px 0 36px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    align-items: center;
+  }
+  .eyebrow .sep { color: var(--line); }
+
+  h1 {
+    font-family: var(--f-serif);
+    font-weight: 900;
+    font-size: clamp(34px, 6vw, 56px);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+
+  .standfirst {
+    font-size: clamp(16px, 2.2vw, 19px);
+    color: var(--ink-mid);
+    max-width: 60ch;
+    margin: 0;
+  }
+  .standfirst strong { color: var(--ink); font-weight: 700; }
+
+  /* ---------- metric strip ---------- */
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin: 0 0 12px;
+  }
+  .metric {
+    background: var(--surface);
+    padding: 20px 18px 18px;
+  }
+  .metric-n {
+    font-family: var(--f-mono);
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .metric-n.bad { color: var(--sev-1); }
+  .metric-n.warn { color: var(--sev-2); }
+  .metric-l {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .metric-note {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+    margin: 0 0 64px;
+  }
+
+  /* ---------- verdict ---------- */
+
+  .verdict {
+    background: var(--surface);
+    border-left: 4px solid var(--sev-1);
+    padding: 30px 32px;
+    margin: 0 0 72px;
+  }
+  .verdict p {
+    margin: 0;
+    font-family: var(--f-serif);
+    font-weight: 600;
+    font-size: clamp(19px, 2.8vw, 25px);
+    line-height: 1.6;
+    text-wrap: balance;
+  }
+  .verdict p + p { margin-top: 16px; }
+  .verdict .sub {
+    font-family: var(--f-sans);
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--ink-mid);
+  }
+
+  /* ---------- section headers ---------- */
+
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 12px;
+    margin-bottom: 36px;
+  }
+  .sec-num {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    flex: none;
+  }
+  h2 {
+    font-family: var(--f-serif);
+    font-weight: 700;
+    font-size: clamp(23px, 3.4vw, 31px);
+    line-height: 1.3;
+    margin: 0;
+    letter-spacing: -0.005em;
+  }
+  .sec-sub {
+    margin: -20px 0 36px;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    max-width: 62ch;
+  }
+
+  section { margin-bottom: 76px; }
+
+  /* ---------- step spine ---------- */
+
+  .spine { border-top: 1px solid var(--line-soft); }
+
+  .step {
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    gap: 0 20px;
+    padding: 18px 0 18px;
+    border-bottom: 1px solid var(--line-soft);
+    align-items: start;
+  }
+  .step.flag { background: linear-gradient(90deg, var(--sev-2-wash), transparent 62%); }
+  .step.dead { background: linear-gradient(90deg, var(--sev-1-wash), transparent 62%); }
+  .step.ghost { opacity: 0.72; }
+
+  .step-n {
+    font-family: var(--f-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+    padding-top: 5px;
+    letter-spacing: 0.02em;
+  }
+  .step.flag .step-n { color: var(--sev-2); }
+  .step.dead .step-n { color: var(--sev-1); }
+
+  .step-t {
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0 0 3px;
+    line-height: 1.55;
+  }
+  .step-d {
+    margin: 0;
+    color: var(--ink-mid);
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  .step-d code {
+    font-family: var(--f-mono);
+    font-size: 0.88em;
+    background: var(--surface-2);
+    border: 1px solid var(--line-soft);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--ink);
+  }
+  .step-x {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 1.7;
+    padding-left: 14px;
+    border-left: 2px solid var(--sev-2);
+    color: var(--ink);
+  }
+  .step.dead .step-x { border-left-color: var(--sev-1); }
+  .step-x b { font-weight: 700; }
+
+  .tag {
+    display: inline-block;
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 2px 7px;
+    margin-right: 8px;
+    vertical-align: 2px;
+    border-radius: 2px;
+  }
+  .tag.dead { background: var(--sev-1); color: var(--surface); }
+  .tag.flag { background: var(--sev-2); color: var(--surface); }
+  :root[data-theme="dark"] .tag.dead,
+  :root[data-theme="dark"] .tag.flag { color: #101418; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .tag.dead,
+    :root:not([data-theme="light"]) .tag.flag { color: #101418; }
+  }
+
+  .phase {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 30px 0 0;
+    padding: 0 0 10px;
+  }
+  .phase:first-child { margin-top: 0; }
+  .phase-l {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    flex: none;
+  }
+  .phase-r { height: 1px; background: var(--line); flex: 1; }
+
+  /* ---------- findings ---------- */
+
+  .bucket { margin-bottom: 52px; }
+
+  .bucket-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--line);
+    margin-bottom: 4px;
+  }
+  h3 {
+    font-family: var(--f-sans);
+    font-weight: 900;
+    font-size: 19px;
+    margin: 0;
+    letter-spacing: 0.01em;
+  }
+  .bucket-who {
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+  }
+
+  .find {
+    display: grid;
+    grid-template-columns: 74px 1fr;
+    gap: 0 18px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line-soft);
+    align-items: start;
+  }
+  .sev {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-align: center;
+    padding: 3px 0;
+    border-radius: 2px;
+    margin-top: 4px;
+  }
+  .sev.s1 { background: var(--sev-1-wash); color: var(--sev-1); border: 1px solid var(--sev-1); }
+  .sev.s2 { background: var(--sev-2-wash); color: var(--sev-2); border: 1px solid var(--sev-2); }
+  .sev.s3 { background: var(--sev-3-wash); color: var(--sev-3); border: 1px solid var(--sev-3); }
+
+  .find-t {
+    margin: 0 0 4px;
+    font-weight: 700;
+    font-size: 15.5px;
+    line-height: 1.6;
+  }
+  .find-d {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--ink-mid);
+  }
+  .find-d code {
+    font-family: var(--f-mono);
+    font-size: 0.88em;
+    background: var(--surface-2);
+    border: 1px solid var(--line-soft);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--ink);
+  }
+  .ref {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    margin-left: 4px;
+  }
+
+  /* ---------- closing questions ---------- */
+
+  .asks {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    padding: 8px 32px 32px;
+  }
+  .ask {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 0 16px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--line-soft);
+    align-items: start;
+  }
+  .ask:last-child { border-bottom: 0; padding-bottom: 8px; }
+  .ask-n {
+    font-family: var(--f-mono);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+  .ask-q {
+    font-family: var(--f-serif);
+    font-weight: 700;
+    font-size: clamp(17px, 2.4vw, 20px);
+    line-height: 1.6;
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+  .ask-w {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    line-height: 1.75;
+  }
+
+  footer {
+    margin-top: 72px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    letter-spacing: 0.03em;
+    line-height: 1.9;
+  }
+
+  @media (max-width: 620px) {
+    .wrap { padding: 0 18px 72px; }
+    .masthead { padding-top: 44px; }
+    .step { grid-template-columns: 46px 1fr; gap: 0 12px; }
+    .find { grid-template-columns: 1fr; gap: 8px; }
+    .sev { justify-self: start; padding: 3px 12px; margin-top: 0; }
+    .verdict { padding: 24px 20px; }
+    .asks { padding: 8px 20px 24px; }
+    .ask { grid-template-columns: 30px 1fr; gap: 0 10px; }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">
+      <span>ResoMap</span><span class="sep">/</span>
+      <span>商家訂閱流程實測</span><span class="sep">/</span>
+      <span>21 步驟逐步稽核</span><span class="sep">/</span>
+      <span>2026.08.27</span>
+    </p>
+    <h1>商家付了三千八，<br>然後被留在原地</h1>
+    <p class="standfirst">
+      本文以商家身分，實際走完 ResoMap 從訂閱付款到語音上線的完整路徑。
+      <strong>付款只花 49 秒，之後的每一步都在猜或在等。</strong>
+      以下記錄實測過程，並就流程本身指出問題與責任歸屬。
+    </p>
+  </header>
+
+  <div class="metrics" style="margin-top:36px">
+    <div class="metric">
+      <span class="metric-n">21</span>
+      <span class="metric-l">流程步驟總數</span>
+    </div>
+    <div class="metric">
+      <span class="metric-n">5</span>
+      <span class="metric-l">商家能獨立完成的步驟<br>（全部落在付款段）</span>
+    </div>
+    <div class="metric">
+      <span class="metric-n bad">3</span>
+      <span class="metric-l">死路<br>（點下去無法前進）</span>
+    </div>
+    <div class="metric">
+      <span class="metric-n bad">0</span>
+      <span class="metric-l">全程收到的通知則數</span>
+    </div>
+    <div class="metric">
+      <span class="metric-n warn">3</span>
+      <span class="metric-l">純人工關卡<br>（商家看不見）</span>
+    </div>
+    <div class="metric">
+      <span class="metric-n warn">$3,800</span>
+      <span class="metric-l">專業版年費 ／ 3 個景點</span>
+    </div>
+  </div>
+  <p class="metric-note">
+    實測帳號 TszHong Yung ・ 測試店家「香記烤鴨」（台中南區台中路 252 號）・ 後台版本 dev-1.0.0
+  </p>
+
+  <div class="verdict">
+    <p>付費與交付之間，沒有任何一條產品路徑把它們接起來。</p>
+    <p class="sub">
+      商家買的是「3 個景點」的上架權，但付款完成的那一刻，App 沒有變化：沒有引導、沒有額度顯示、
+      沒有「我的景點」入口。他必須自己回到地圖、自己打字搜尋店名、自己錄音、自己寫文案、自己拍照，
+      再自己猜到右上角的三個點，最後靠自己反覆回訪去試「認領」按鈕能不能按。
+      整條主線由三個純人工關卡串起來，而商家一個都看不到。
+    </p>
+  </div>
+
+  <!-- ================= WALKTHROUGH ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2>實測全紀錄</h2>
+    </div>
+    <p class="sec-sub">
+      以下為 21 個步驟的實際畫面內容。灰底為正常步驟，橙色為有問題的步驟，紅色為死路——
+      使用者在該處無法靠自己前進。
+    </p>
+
+    <div class="spine">
+
+      <div class="phase"><span class="phase-l">A ・ 訂閱付款</span><span class="phase-r"></span></div>
+
+      <div class="step">
+        <div class="step-n">01</div>
+        <div>
+          <p class="step-t">打開 App</p>
+          <p class="step-d">地圖首頁。畫面與一般遊客看到的完全相同。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">02</div>
+        <div>
+          <p class="step-t">前往「我的」頁面</p>
+          <p class="step-d">上傳語音 0 則、總播放次數 0 次。七個功能列，其中一個是「我的訂閱」。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">03</div>
+        <div>
+          <p class="step-t">進入「我的訂閱」</p>
+          <p class="step-d">顯示「訂閱方案：免費版」，兩顆按鈕：<code>變更訂閱</code>、<code>檢視認領中的景點</code>。整頁其餘 85% 為空白。</p>
+        </div>
+      </div>
+
+      <div class="step flag">
+        <div class="step-n">04</div>
+        <div>
+          <p class="step-t">選擇方案</p>
+          <p class="step-d">入門版 1 點、進階版 2 點 $2,600／年、專業版 3 點 $3,800／年，三者皆標示「提供 28 天免費試用」。選擇專業版。</p>
+          <p class="step-x"><span class="tag flag">問題</span>頁面一開啟即從第二個方案中段開始，第一個方案的名稱與價格在畫面外；底部自動續訂條款被裁掉半行（<code>…至少 24 小時關閉。付款將在確</code>）。</p>
+        </div>
+      </div>
+
+      <div class="step flag">
+        <div class="step-n">05</div>
+        <div>
+          <p class="step-t">付款完成</p>
+          <p class="step-d">iOS 系統彈窗「完成 ／ 你的購買已成功。」，唯一按鈕是「好」。</p>
+          <p class="step-x"><span class="tag flag">問題</span>按下「好」之後回到原本的方案列表頁。整個產品在此沒有說任何一句「接下來要做什麼」。</p>
+        </div>
+      </div>
+
+      <div class="step flag">
+        <div class="step-n">06</div>
+        <div>
+          <p class="step-t">回到「我的訂閱」</p>
+          <p class="step-d">整頁唯一的變化是那一行字從「免費版」變成「專業版 (3 點)」。</p>
+          <p class="step-x"><span class="tag flag">問題</span>沒有點數餘額、沒有到期日、沒有下次扣款日、沒有試用剩餘天數、沒有取消入口。付了 $3,800 的人不知道自己何時會被扣款。</p>
+        </div>
+      </div>
+
+      <div class="step flag ghost">
+        <div class="step-n">07</div>
+        <div>
+          <p class="step-t">（流程圖中沒有這一步）</p>
+          <p class="step-d">實測者的截圖從第 6 步直接跳到第 8 步。</p>
+          <p class="step-x"><span class="tag flag">問題</span>這個空缺本身就是發現：付款完成到下一個有意義的動作之間，產品沒有給出任何東西可以截圖。</p>
+        </div>
+      </div>
+
+      <div class="phase"><span class="phase-l">B ・ 找到自己的店</span><span class="phase-r"></span></div>
+
+      <div class="step dead">
+        <div class="step-n">08</div>
+        <div>
+          <p class="step-t">回到首頁地圖，找不到自己的店</p>
+          <p class="step-d">地圖上散落數個灰色 pin，沒有任何一個標示為「你的店」。</p>
+          <p class="step-x"><span class="tag dead">死路</span><b>付費前與付費後的地圖完全相同。</b>沒有自動定位、沒有「我的景點」入口、pin 沒有任何差別待遇。商家只能自己捲地圖找。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">09</div>
+        <div>
+          <p class="step-t">用搜尋框打字找店</p>
+          <p class="step-d">在「搜尋景點」輸入「香記烤鴨」，紅色 pin 出現。這是商家唯一能找到自己的方法。</p>
+        </div>
+      </div>
+
+      <div class="phase"><span class="phase-l">C ・ 自製內容</span><span class="phase-r"></span></div>
+
+      <div class="step flag">
+        <div class="step-n">10</div>
+        <div>
+          <p class="step-t">進入景點頁</p>
+          <p class="step-d">畫面顯示「這個地點目前還沒有語音導覽唷！」，下方一顆<code>新增語音導覽</code>。</p>
+          <p class="step-x"><span class="tag flag">問題</span>這句話的語氣是寫給觀光客的。剛付完 $3,800 的商家看到的是同一句。</p>
+        </div>
+      </div>
+
+      <div class="step flag">
+        <div class="step-n">11</div>
+        <div>
+          <p class="step-t">上傳音檔</p>
+          <p class="step-d">選檔後顯示 <code>Neo_渝函_預設-## 一隻烤.mp3 (01:53)</code>。</p>
+          <p class="step-x"><span class="tag flag">問題</span>「音檔時長至少 30 秒，且不得超過 5 分鐘」這行規則印在上傳按鈕的<b>下方</b>——使用者是先錄完、先選完檔才看到。另：原始檔名未經處理直接外露，連檔名裡的 <code>##</code> 都照樣顯示。</p>
+        </div>
+      </div>
+
+      <div class="step flag">
+        <div class="step-n">12</div>
+        <div>
+          <p class="step-t">自行選擇景點類型</p>
+          <p class="step-d">「請先確認本地點屬於何種景點？」兩個方框：一般景點／商家景點。勾選商家景點後提示「需付費才能上架該地點導覽語音」。</p>
+          <p class="step-x"><span class="tag flag">問題</span>一個直接決定金流的分岔，被放在流程中段、做成沒有防呆的 checkbox。而且商家<b>已經在第 5 步付過錢了</b>，這裡卻再次告知他需要付費——付款狀態與這個選擇完全沒有連動。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">13</div>
+        <div>
+          <p class="step-t">自己寫文案、自己拍照</p>
+          <p class="step-d">商家自行撰寫景點介紹全文，並自行上傳「導覽配圖」。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">14</div>
+        <div>
+          <p class="step-t">輸入標題與內文送出</p>
+          <p class="step-d">文字計數 506／2047，按下<code>確認新增</code>。</p>
+        </div>
+      </div>
+
+      <div class="phase"><span class="phase-l">D ・ 審核黑箱</span><span class="phase-r"></span></div>
+
+      <div class="step flag">
+        <div class="step-n">15</div>
+        <div>
+          <p class="step-t">「新增成功！！審核通過後即可上架」</p>
+          <p class="step-d">摘要頁列出導覽名稱「鴨霸子現烤」、語言、上傳日期、導覽簡介。</p>
+          <p class="step-x"><span class="tag flag">問題</span>兩件事：一，<b>沒有告訴商家審核要多久</b>，也沒有任何可以查詢進度的地方。二，簡介欄直接印出未解析的 Markdown：<code>## 一隻烤鴨，飄香台中四十年</code>、內文的 <code>**香記烤鴨**</code>。</p>
+        </div>
+      </div>
+
+      <div class="step dead">
+        <div class="step-n">16</div>
+        <div>
+          <p class="step-t">回到景點頁，剛上傳的東西不見了</p>
+          <p class="step-d">導覽語音列表顯示「尚無語音導覽」。實測者在截圖上用紅筆圈出右上角的三個點，並註記「原來，商家要點右上角」。</p>
+          <p class="step-x"><span class="tag dead">死路</span>剛剛才成功上傳的內容，在自己的畫面上<b>完全沒有痕跡</b>——沒有「審核中」卡片、沒有灰色佔位。使用者的合理推論是「我剛剛那筆失敗了」，接著就會重傳。而「原來」這兩個字，本身就是一次可用性測試的結論。</p>
+        </div>
+      </div>
+
+      <div class="step flag">
+        <div class="step-n">17</div>
+        <div>
+          <p class="step-t">點開三個點</p>
+          <p class="step-d">下拉選單裡只有一個選項：<code>景點管理</code>。</p>
+          <p class="step-x"><span class="tag flag">問題</span>付費商家的唯一功能入口，被放在最不可能被發現的位置，而且只放了一個項目。</p>
+        </div>
+      </div>
+
+      <div class="step dead">
+        <div class="step-n">18</div>
+        <div>
+          <p class="step-t">「目前未被認領」，但按下去說「不可被認領」</p>
+          <p class="step-d">認領狀態區顯示「目前未被認領」，旁邊是一顆亮藍色的<code>我要認領</code>。按下後畫面頂端跳出紅色橫幅：「該景點目前不可被認領」。</p>
+          <p class="step-x"><span class="tag dead">死路</span><b>畫面自相矛盾。</b>前端沒有取得真實的可認領狀態就把按鈕點亮，交給後端去擋。使用者被騙點一次，換來一則不說原因、不說要等什麼、不說要等多久、不說找誰的錯誤訊息。</p>
+        </div>
+      </div>
+
+      <div class="phase"><span class="phase-l">E ・ 後台（商家看不到）</span><span class="phase-r"></span></div>
+
+      <div class="step">
+        <div class="step-n">19</div>
+        <div>
+          <p class="step-t">後台語音管理：已上架、審核完成</p>
+          <p class="step-d">管理員手動將「香記烤鴨」的語音切為「上架」，審核狀態改為「完成」。建立時間 2026/8/27 下午 7:59:04。</p>
+        </div>
+      </div>
+
+      <div class="step flag">
+        <div class="step-n">20</div>
+        <div>
+          <p class="step-t">後台景點管理：手動打開「是否開放認領」</p>
+          <p class="step-d">同一筆景點：審核狀態「完成」、景點類型「商家」、是否啟用「啟用」、是否開放認領「開放」、認領狀態「未認領」。</p>
+          <p class="step-x"><span class="tag flag">問題</span>同一頁上，這間店的「語音數量（含下架）」是 <b>0</b>、「總共收聽數」是 <b>0</b>——但第 19 步的語音管理明明顯示它已上架。<b>後台兩張表對不起來。</b>App 端顯示「尚無語音導覽」，很可能就是讀到這個 0。</p>
+        </div>
+      </div>
+
+      <div class="step dead">
+        <div class="step-n">20b</div>
+        <div>
+          <p class="step-t">觀光客端：有語音，但不給聽</p>
+          <p class="step-d">另一間店「挪威森林新店精品館」的導覽列表裡有一則 01:13 的語音，按下播放後跳出：「無法播放錄音 ／ 此景點未被管理，無法播放錄音」。</p>
+          <p class="step-x"><span class="tag dead">死路</span>這是給<b>一般遊客</b>看的訊息。內容存在、封面圖存在、時長存在，卻因為一個使用者完全無法理解也無法解決的內部狀態而被拒絕播放。同時傷 C 端體驗與 B 端信任。</p>
+        </div>
+      </div>
+
+      <div class="phase"><span class="phase-l">F ・ 碰運氣</span><span class="phase-r"></span></div>
+
+      <div class="step flag">
+        <div class="step-n">21</div>
+        <div>
+          <p class="step-t">商家自己再回來試一次，這次成功了</p>
+          <p class="step-d">「儲存成功 ／ 您已經認領此景點」，並出現<code>取消認領</code>與「自定義廣告」欄位（0／50 字）。</p>
+          <p class="step-x"><span class="tag flag">問題</span>後台在第 20 步打開了開關，但<b>商家沒有收到任何通知</b>——沒有推播、沒有 Email、沒有站內信、沒有紅點。實測者自己的註記寫得很清楚：<b>「只能憑感覺，靠運氣」</b>。</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= FINDINGS ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2>問題清單與責任歸屬</h2>
+    </div>
+    <p class="sec-sub">
+      分成三層。第一層可以直接對工程師談，第二層要對產品／設計談，第三層是公司層級的問題——
+      而第三層才是這份稽核真正的重點。
+    </p>
+
+    <div class="bucket">
+      <div class="bucket-head">
+        <h3>一、工程實作缺陷</h3>
+        <span class="bucket-who">責任：前端 ／ 後端 ／ QA</span>
+      </div>
+
+      <div class="find">
+        <div class="sev s1">致命</div>
+        <div>
+          <p class="find-t">按鈕可點但後端拒絕<span class="ref">步驟 18</span></p>
+          <p class="find-d">畫面顯示「目前未被認領」且「我要認領」是可點的亮色狀態，實際按下卻回「該景點目前不可被認領」。前端在渲染前沒有取得真實的可認領旗標，直接把按鈕點亮丟給後端擋。這是最典型的「前端不 disable、後端才擋」寫法。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s1">致命</div>
+        <div>
+          <p class="find-t">後台兩張表資料不一致<span class="ref">步驟 19 ↔ 20</span></p>
+          <p class="find-d">語音管理顯示該景點語音已上架、審核完成；景點管理顯示同一景點「語音數量（含下架）＝ 0」「總共收聽數＝ 0」。同一份資料在兩個模組讀出兩種結果。App 端「尚無語音導覽」極可能是同一個資料源問題的下游症狀。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s1">致命</div>
+        <div>
+          <p class="find-t">上傳成功後沒有任何「審核中」狀態<span class="ref">步驟 15 → 16</span></p>
+          <p class="find-d">系統明明知道這筆資料存在（後台看得到），卻不在商家自己的景點頁上呈現任何佔位或狀態。使用者無法區分「審核中」與「上傳失敗」，會直接製造重複上傳與客服工單。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s2">嚴重</div>
+        <div>
+          <p class="find-t">Markdown 未被解析，原始標記外露<span class="ref">步驟 15</span></p>
+          <p class="find-d">導覽簡介直接印出 <code>## 一隻烤鴨，飄香台中四十年</code>，內文出現 <code>**香記烤鴨**</code>。後端存 Markdown、前端當純文字輸出——代表前後端從未對「內容格式」達成共識，也沒有人定義過這個欄位的規格。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s2">嚴重</div>
+        <div>
+          <p class="find-t">自動續訂條款顯示不全<span class="ref">步驟 4</span></p>
+          <p class="find-d">「訂閱會自動續訂，除非在當前訂閱期結束前至少 24 小時關閉。付款將在確…」——條款在句子中間被容器裁斷。這不是排版瑕疵，這是訂閱制商品的揭露義務問題，同時也是 App Store 審核的常見退件點。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s2">嚴重</div>
+        <div>
+          <p class="find-t">錯誤訊息不說原因也不說下一步<span class="ref">步驟 18、20b</span></p>
+          <p class="find-d">「該景點目前不可被認領」「此景點未被管理，無法播放錄音」——兩則訊息都只陳述系統內部狀態，不告訴使用者為什麼、要等什麼、能做什麼。第二則更是直接對一般遊客顯示內部術語。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s3">待改</div>
+        <div>
+          <p class="find-t">方案頁初始捲動位置錯誤<span class="ref">步驟 4</span></p>
+          <p class="find-d">進入頁面時第一個方案（入門版）已被捲出畫面，只剩「1 個景點／28 天免費試用」兩行，標題與價格看不到。最便宜的方案在預設視野裡是殘缺的。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s3">待改</div>
+        <div>
+          <p class="find-t">「回復購買」幾乎不可見<span class="ref">步驟 4</span></p>
+          <p class="find-d">位於右上角、底色與周圍近乎同色、字級極小。換機或重裝的商家找不到它，會直接認為付的錢消失了。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s3">待改</div>
+        <div>
+          <p class="find-t">上傳檔名未清洗<span class="ref">步驟 11</span></p>
+          <p class="find-d"><code>Neo_渝函_預設-## 一隻烤.mp3</code> 原封不動顯示給使用者。系統不改名、不截斷、不隱藏，連上游 AI 工具的預設命名格式都一併曝光。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s3">待改</div>
+        <div>
+          <p class="find-t">「取消認領」是無防護的危險操作<span class="ref">步驟 21</span></p>
+          <p class="find-d">按鈕與「您已經認領此景點」並排，沒有二次確認、沒有後果說明。取消之後語音會不會下架？已經扣掉的點數會不會退？畫面上沒有一個字。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s3">待改</div>
+        <div>
+          <p class="find-t">營運中的後台掛著 <code>dev-1.0.0</code><span class="ref">步驟 19、20</span></p>
+          <p class="find-d">正在處理真實商家資料與金流狀態的管理後台，版本號仍是 dev。環境區分與版本管理沒有留下痕跡。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bucket">
+      <div class="bucket-head">
+        <h3>二、產品設計缺失</h3>
+        <span class="bucket-who">責任：PM ／ 設計</span>
+      </div>
+
+      <div class="find">
+        <div class="sev s1">致命</div>
+        <div>
+          <p class="find-t">付款成功後零引導<span class="ref">步驟 5 → 8</span></p>
+          <p class="find-d">系統彈窗「你的購買已成功」按下「好」，回到方案列表，沒有下一步、沒有歡迎頁、沒有待辦清單。整個漏斗最貴、使用者意願最高的那一格，被完全浪費。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s1">致命</div>
+        <div>
+          <p class="find-t">訂閱綁帳號，內容綁景點，兩者在產品裡沒有連結<span class="ref">步驟 8、9</span></p>
+          <p class="find-d">付費身分不會改變地圖、不會標記自己的店、不會產生「我的景點」入口。商家只能打字搜尋自己的店名。<b>後面所有的混亂都源自這一點</b>——系統從頭到尾不知道「這個付費帳號」和「哪一間店」是同一件事。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s1">致命</div>
+        <div>
+          <p class="find-t">「認領」這個步驟不該存在<span class="ref">步驟 18、20b、21</span></p>
+          <p class="find-d">商家已付費、已上傳、後台已審核通過，語音仍然播不出來，理由是「未被認領」。這一步不解決任何使用者的問題，只解決系統內部的資料歸屬問題，卻讓使用者自己去執行、還要等別人開權限。付費 ≠ 開通，中間硬插了一個沒有人理解的手動動作。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s2">嚴重</div>
+        <div>
+          <p class="find-t">「點數」從頭到尾沒有被定義，也沒有被顯示<span class="ref">步驟 3、6、21</span></p>
+          <p class="find-d">方案叫「專業版（3 點）」「3 個景點」，但沒有任何畫面顯示「已使用 1／3」。認領一個景點會不會扣點？取消認領會不會退點？使用者買了什麼、用掉多少、還剩多少，全程無從得知。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s2">嚴重</div>
+        <div>
+          <p class="find-t">「我的訂閱」缺少訂閱制的所有基本資訊<span class="ref">步驟 3、6</span></p>
+          <p class="find-d">沒有到期日、沒有下次扣款日與金額、沒有 28 天試用的剩餘天數、沒有取消入口、沒有發票或收據。整頁只有一行方案名稱加兩顆按鈕，其餘全是空白。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s2">嚴重</div>
+        <div>
+          <p class="find-t">唯一的商家功能入口藏在右上角三個點裡<span class="ref">步驟 16、17</span></p>
+          <p class="find-d">「景點管理」是整個付費價值的入口，卻沒有出現在「我的」頁面、沒有出現在訂閱頁、沒有出現在景點頁的主要區域。而且選單裡只有這一個選項——連做成選單的理由都沒有。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s2">嚴重</div>
+        <div>
+          <p class="find-t">「檢視認領中的景點」在最需要它的時候必定是空的<span class="ref">步驟 3</span></p>
+          <p class="find-d">這顆按鈕從免費版就存在，但它只顯示「已認領」的景點。商家在整段流程的 90％ 時間裡都還沒認領成功，點進去只會看到空白，因此不會再點第二次。它沒有變成入口，反而變成一次失望。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s2">嚴重</div>
+        <div>
+          <p class="find-t">全程零通知<span class="ref">步驟 15、19、20、21</span></p>
+          <p class="find-d">付款成功、審核完成、開放認領、認領成功——四個關鍵狀態變化，商家收到 0 則通知。App 內也沒有任何「我的待辦／狀態中心」可以主動查詢。商家唯一的辦法是反覆回訪去戳按鈕。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s2">嚴重</div>
+        <div>
+          <p class="find-t">商家與遊客共用同一套文案<span class="ref">步驟 1、10</span></p>
+          <p class="find-d">付了 $3,800 的商家，進到自己的店頁看到的仍是「這個地點目前還沒有語音導覽唷！」。整個 App 只有一種語氣、一種視角，付費身分在介面上不存在。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s2">嚴重</div>
+        <div>
+          <p class="find-t">決定金流的分岔，做成流程中段一個 checkbox<span class="ref">步驟 12</span></p>
+          <p class="find-d">「一般景點／商家景點」直接決定要不要付費才能上架，卻放在上傳音檔之後、用兩個外觀相同的方框呈現、沒有防呆、也沒有跟已完成的付款狀態連動。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s3">待改</div>
+        <div>
+          <p class="find-t">音檔規則出現在錯誤的時機<span class="ref">步驟 11</span></p>
+          <p class="find-d">「至少 30 秒、不得超過 5 分鐘」印在上傳按鈕下方。錄了 20 秒或 8 分鐘的商家必須整段重錄。這種限制屬於「開始錄之前」的資訊。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s3">待改</div>
+        <div>
+          <p class="find-t">三個名字指同一件事，系統零檢查<span class="ref">步驟 9、11、15</span></p>
+          <p class="find-d">景點名「香記烤鴨」、導覽名「鴨霸子現烤」、檔名「一隻烤」。系統不比對、不提示、不建議預填。連實測者自己都混淆了，正說明流程沒有給任何引導。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s3">待改</div>
+        <div>
+          <p class="find-t">最貴的方案預設勾選，且看不出目前方案<span class="ref">步驟 4</span></p>
+          <p class="find-d">進入「變更訂閱」頁時，$3,800 的專業版已被打勾，而畫面上沒有任何標示指出使用者目前是免費版。在訂閱頁面上，這種預設值很容易被解讀為刻意設計。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bucket">
+      <div class="bucket-head">
+        <h3>三、流程與管理層問題</h3>
+        <span class="bucket-who">責任：公司 ／ 專案管理</span>
+      </div>
+
+      <div class="find">
+        <div class="sev s1">致命</div>
+        <div>
+          <p class="find-t">主線由三個純人工關卡串起來，商家一個都看不到<span class="ref">步驟 15 → 21</span></p>
+          <p class="find-d">① 人工審核語音 ② 人工打開「是否開放認領」 ③ 商家自己回來重試認領。這三個環節沒有排程、沒有 SLA、沒有對外揭露，也沒有任何一個畫面告訴商家「你現在卡在第幾關」。這不是產品流程，這是人力流程外包給了付費客戶。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s1">致命</div>
+        <div>
+          <p class="find-t">C 端被內部流程連坐<span class="ref">步驟 20b</span></p>
+          <p class="find-d">一般遊客看到有語音、有封面、有時長，按下播放卻被拒絕。壞得比「暫無內容」更難看——是「有內容但不給你聽」。商家付了錢，成果對外卻是壞的，且壞在一個他無法解釋給客人聽的理由上。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s1">致命</div>
+        <div>
+          <p class="find-t">商業模式與產品交付互相矛盾<span class="ref">步驟 10 → 14</span></p>
+          <p class="find-d">收費 $3,800／年，而交付物 100％ 由商家自己錄音、自己撰稿、自己拍照、自己上傳、自己認領。付費之後工作量不減反增。從流程上完全看不出這筆錢買到了什麼服務——這會是商家投訴與退費的第一個切入點。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s2">嚴重</div>
+        <div>
+          <p class="find-t">21 步裡，商家能靠自己完成的只有付款那 5 步</p>
+          <p class="find-d">第 8 步之後，每一步都需要「猜」或「等」：猜自己的店在地圖哪裡、猜要點右上角、猜上傳有沒有成功、猜審核好了沒、猜現在能不能認領。產品沒有在任何一個環節主動告知狀態。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s2">嚴重</div>
+        <div>
+          <p class="find-t">三處死路，任何一處都足以流失一個付費商家</p>
+          <p class="find-d">第 8 步找不到自己的店、第 16 步剛上傳的內容消失、第 18 步按鈕點了報錯。這三處都不是邊緣情境，而是<b>主線上必經的節點</b>。以漏斗計算，能自己走完全程的商家會是極少數。</p>
+        </div>
+      </div>
+
+      <div class="find">
+        <div class="sev s1">致命</div>
+        <div>
+          <p class="find-t">這條主線顯然沒有被內部完整走過一次</p>
+          <p class="find-d">第 8、16、18、21 步的問題，任何人只要以商家身分實際付一次錢、走一次流程，就不可能看不到。這 21 步的流程圖是<b>使用者第一次幫這個團隊走完的</b>。缺的不是工程能力，是驗收——沒有人被指派要對「付款到上線」這條端到端路徑負責。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ASKS ================= -->
+  <section style="margin-bottom:0">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2>可以直接問對方的三個問題</h2>
+    </div>
+    <p class="sec-sub">
+      這三個問題不需要技術背景就能問，而且沒有一個能用「這是小 bug，之後修」帶過。
+    </p>
+
+    <div class="asks">
+      <div class="ask">
+        <div class="ask-n">1</div>
+        <div>
+          <p class="ask-q">上線之前，團隊裡有沒有任何一個人，以商家身分、用自己的信用卡，從付款一路走到語音真的能被播放？</p>
+          <p class="ask-w">如果有，第 8、16、18 步不可能長這樣。如果沒有，問題就不在工程師身上，而在誰該負責驗收這條路徑。</p>
+        </div>
+      </div>
+      <div class="ask">
+        <div class="ask-n">2</div>
+        <div>
+          <p class="ask-q">「認領」這個步驟是為了解決什麼問題？它為什麼不能在付款完成的當下自動完成？</p>
+          <p class="ask-w">如果答案是「要防止有人亂認領別人的店」，那真正該做的是身分驗證，不是把一個需要後台手動開關的按鈕丟給付費客戶自己去猜。</p>
+        </div>
+      </div>
+      <div class="ask">
+        <div class="ask-n">3</div>
+        <div>
+          <p class="ask-q">商家付的 $3,800，買到的交付物具體是哪一個畫面？</p>
+          <p class="ask-w">錄音是商家自己錄的、文案是商家自己寫的、照片是商家自己拍的、認領是商家自己點的。請對方指出這 21 個畫面裡，哪一個是這筆錢換來的東西。</p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      稽核方法：以真實商家帳號完整走完訂閱至上線流程，逐步截圖記錄，共 21 個步驟。<br>
+      本文只陳述觀察到的流程問題與責任歸屬，不含修復方案。<br>
+      實測日期 2026/08/26–08/27 ・ 測試景點「香記烤鴨」・ 後台 backend.resomap.app（dev-1.0.0）
+    </footer>
+  </section>
+
+</div>
+
+</body>
+</html>

@@ -7,8 +7,9 @@
 - **實測日期**：2026/08/26 – 08/27
 - **測試景點**：香記烤鴨（台中市南區台中路 252 號）
 - **後台**：`backend.resomap.app`（版本 `dev-1.0.0`）
+- **線上閱讀**：https://tszhongyung0601-sketch.github.io/resomap-flow-audit/
 
-> **關於截圖內容**：`evidence/` 為實測過程的原始截圖，未經修改，包含測試帳號的姓名與 Email、店家名稱與地址、後台網址。保留原樣是為了讓每一項發現都可被獨立查核。
+> **關於截圖內容**：`evidence/` 為實測過程的原始截圖，除了帳號 Email 已塗銷之外未經修改。保留原樣是為了讓每一項發現都可被獨立查核。
 
 ---
 
@@ -43,6 +44,10 @@
 ## 目錄結構
 
 ```
+docs/                                  GitHub Pages 網站（線上閱讀入口）
+  index.html                           landing page
+  subscription-flow-audit.html         報告 01（可獨立開啟）
+  map-migration-assessment.html        報告 02（可獨立開啟）
 reports/
   01-subscription-flow-audit.html      21 步實測全紀錄 + 問題清單與責任歸屬
   02-map-migration-assessment.html     Google Maps → OSM 遷移評估
@@ -53,6 +58,7 @@ evidence/
 build/
   deck.js                              簡報產生器（pptxgenjs）
   prep*.js                             截圖裁切／縮放腳本（sharp）
+  pages.js                             把 reports/ 包成可獨立開啟的網頁並產生 docs/
   img/                                 處理後的圖檔（deck.js 直接引用）
 ```
 
@@ -68,6 +74,12 @@ node build/deck.js
 
 `prep*.js` 讀取 `evidence/` 的原始截圖，輸出到 `build/img/`；`deck.js` 讀 `build/img/` 產生 `.pptx`。
 若 `build/img/` 已存在（本 repo 已含），可直接跑 `node build/deck.js`。
+
+重建網站（`reports/` 改動後）：
+
+```bash
+node build/pages.js
+```
 
 > 註：`prep*.js` 目前寫死來源路徑為桌面的「商家訂閱流程2」資料夾。若要在別台機器重跑，需先把路徑改指到本 repo 的 `evidence/`。
 
