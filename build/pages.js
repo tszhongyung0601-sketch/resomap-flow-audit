@@ -199,9 +199,25 @@ const index = `<!doctype html>
       </a>
       <a class="card" href="map-migration-assessment.html">
         <span class="num">報告 02</span>
-        <h3>Google Maps 換 OSM 的代價</h3>
-        <p>依同一份實測流程列出所有 Google 觸點，分三級評估遷移代價：直接壞掉的、明顯降級的、會變好的，以及必須先問到答案的八個問題。</p>
+        <h3>換 OSM，只有兩步會變</h3>
+        <p>把商家前台實際的 12 個操作逐步標記：哪一步是 ResoMap 自己的、哪一步依賴 Google 地點搜尋、哪一步從前台無法確認。附「新開的店現在進不來」的商業分析。</p>
       </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>地圖服務評估的重點</h2>
+    <div class="deadends" style="border-color:var(--accent);background:var(--surface);">
+      <h3 style="color:var(--accent)">12 步裡只有 2 步真的碰到 Google</h3>
+      <ul>
+        <li><b>9 步</b><span>訂閱、圖片、文案、語音、送審、審核、認領、上架——ResoMap 自己的商業流程，換地圖服務動不到。</span></li>
+        <li><b>2 步</b><span>搜尋店家、帶出店名地址——真正依賴 Google 地點搜尋的就這兩步。</span></li>
+        <li><b>1 步</b><span>建立景點／商家——目前完全不存在，換 OSM 後必須補上。</span></li>
+      </ul>
+      <p style="margin:16px 0 0;font-size:14.5px;line-height:1.75;color:var(--ink-mid)">
+        而目前把「找到地點」外包給 Google 的代價是：<b style="color:var(--ink)">Google 沒收錄的店，ResoMap 就收不了錢</b>——
+        新開幕的餐廳、夜市攤位、地方景點，全部卡在第 2 步。
+      </p>
     </div>
   </section>
 

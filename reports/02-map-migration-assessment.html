@@ -1,4 +1,4 @@
-<title>Google Maps 換 OSM 的代價</title>
+<title>OSM 換不換，只有兩步會變</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap">
@@ -15,14 +15,14 @@
     --line-soft:   #E3E7EC;
     --accent:      #0E4749;
     --accent-wash: #E2EDEC;
-    --sev-1:       #9E1B14;
-    --sev-1-wash:  #F7E4E2;
-    --sev-2:       #A85C0C;
-    --sev-2-wash:  #F8ECDC;
-    --sev-3:       #2F6B4F;
-    --sev-3-wash:  #E4EFE8;
-    --ask:         #3C4A5E;
-    --ask-wash:    #E8ECF2;
+    --own:         #235F45;
+    --own-wash:    #E4EFE8;
+    --goog:        #9E1B14;
+    --goog-wash:   #F7E4E2;
+    --unk:         #A85C0C;
+    --unk-wash:    #F8ECDC;
+    --new:         #2F4A7A;
+    --new-wash:    #E5EAF3;
 
     --f-serif: "Noto Serif TC", "Songti TC", "PMingLiU", Georgia, serif;
     --f-sans:  "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
@@ -41,14 +41,14 @@
       --line-soft:   #242B33;
       --accent:      #5FBDB2;
       --accent-wash: #16302F;
-      --sev-1:       #F0837A;
-      --sev-1-wash:  #33191A;
-      --sev-2:       #E5A44F;
-      --sev-2-wash:  #322414;
-      --sev-3:       #74C79B;
-      --sev-3-wash:  #16271E;
-      --ask:         #A9B6C8;
-      --ask-wash:    #1E252F;
+      --own:         #74C79B;
+      --own-wash:    #16271E;
+      --goog:        #F0837A;
+      --goog-wash:   #33191A;
+      --unk:         #E5A44F;
+      --unk-wash:    #322414;
+      --new:         #8FAEDC;
+      --new-wash:    #1A2233;
     }
   }
   :root[data-theme="dark"] {
@@ -62,67 +62,65 @@
     --line-soft:   #242B33;
     --accent:      #5FBDB2;
     --accent-wash: #16302F;
-    --sev-1:       #F0837A;
-    --sev-1-wash:  #33191A;
-    --sev-2:       #E5A44F;
-    --sev-2-wash:  #322414;
-    --sev-3:       #74C79B;
-    --sev-3-wash:  #16271E;
-    --ask:         #A9B6C8;
-    --ask-wash:    #1E252F;
+    --own:         #74C79B;
+    --own-wash:    #16271E;
+    --goog:        #F0837A;
+    --goog-wash:   #33191A;
+    --unk:         #E5A44F;
+    --unk-wash:    #322414;
+    --new:         #8FAEDC;
+    --new-wash:    #1A2233;
   }
 
   * { box-sizing: border-box; }
 
   body {
-    margin: 0;
-    background: var(--ground);
-    color: var(--ink);
-    font-family: var(--f-sans);
-    font-size: 16px;
-    line-height: 1.75;
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: var(--f-sans); font-size: 16px; line-height: 1.75;
     -webkit-font-smoothing: antialiased;
   }
-
-  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px 96px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px 96px; }
 
   .masthead { padding: 64px 0 34px; border-bottom: 2px solid var(--ink); }
-
   .eyebrow {
     font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.18em;
     text-transform: uppercase; color: var(--accent); margin: 0 0 20px;
     display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
   }
   .eyebrow .sep { color: var(--line); }
-
   h1 {
     font-family: var(--f-serif); font-weight: 900;
     font-size: clamp(32px, 5.4vw, 52px); line-height: 1.2;
     letter-spacing: -0.01em; margin: 0 0 18px; text-wrap: balance;
   }
-
   .standfirst { font-size: clamp(16px, 2.2vw, 18.5px); color: var(--ink-mid); max-width: 62ch; margin: 0; }
   .standfirst strong { color: var(--ink); font-weight: 700; }
 
-  .quote {
-    margin: 32px 0 0; padding: 20px 24px; background: var(--surface);
-    border-left: 3px solid var(--ink-soft);
+  .correction {
+    margin: 32px 0 0; padding: 22px 26px; background: var(--surface);
+    border-left: 3px solid var(--unk);
   }
-  .quote p { margin: 0; font-size: 15px; color: var(--ink-mid); line-height: 1.8; }
-  .quote .who { display: block; margin-top: 10px; font-family: var(--f-mono); font-size: 11px; color: var(--ink-soft); letter-spacing: 0.04em; }
+  .correction .lbl {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--unk); display: block; margin-bottom: 10px;
+  }
+  .correction p { margin: 0; font-size: 14.5px; color: var(--ink-mid); line-height: 1.8; }
+  .correction p + p { margin-top: 10px; }
+  .correction b { color: var(--ink); }
 
-  .verdict {
-    background: var(--surface); border-left: 4px solid var(--sev-1);
-    padding: 30px 32px; margin: 48px 0 72px;
+  .tally {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px; background: var(--line); border: 1px solid var(--line); margin: 44px 0 64px;
   }
-  .verdict p {
-    margin: 0; font-family: var(--f-serif); font-weight: 600;
-    font-size: clamp(19px, 2.7vw, 24px); line-height: 1.6; text-wrap: balance;
+  .tally > div { background: var(--surface); padding: 20px 18px 18px; }
+  .tally b {
+    display: block; font-family: var(--f-mono); font-weight: 600; font-size: 32px;
+    line-height: 1; margin-bottom: 8px; font-variant-numeric: tabular-nums;
   }
-  .verdict .sub {
-    font-family: var(--f-sans); font-weight: 400; font-size: 15px;
-    line-height: 1.8; color: var(--ink-mid); margin-top: 16px;
-  }
+  .tally .c-goog { color: var(--goog); }
+  .tally .c-own  { color: var(--own); }
+  .tally .c-new  { color: var(--new); }
+  .tally span { font-size: 13px; color: var(--ink-soft); line-height: 1.55; }
 
   .sec-head {
     display: flex; align-items: baseline; gap: 16px;
@@ -130,69 +128,106 @@
   }
   .sec-num { font-family: var(--f-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.12em; color: var(--accent); flex: none; }
   h2 { font-family: var(--f-serif); font-weight: 700; font-size: clamp(23px, 3.2vw, 30px); line-height: 1.3; margin: 0; }
-  .sec-sub { margin: 0 0 32px; color: var(--ink-soft); font-size: 14.5px; max-width: 64ch; }
-
+  .sec-sub { margin: 0 0 30px; color: var(--ink-soft); font-size: 14.5px; max-width: 66ch; }
   section { margin-bottom: 76px; }
 
-  /* ---- inventory table ---- */
+  /* legend */
+  .legend { display: flex; flex-wrap: wrap; gap: 10px 20px; margin: 0 0 22px; }
+  .legend span {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--ink-mid);
+  }
+  .dot { width: 11px; height: 11px; border-radius: 2px; flex: none; }
+  .d-own { background: var(--own); }
+  .d-goog { background: var(--goog); }
+  .d-unk { background: var(--unk); }
+  .d-new { background: var(--new); }
+
+  /* flow table */
   .tablewrap { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
-  table { border-collapse: collapse; width: 100%; min-width: 720px; }
-  th, td { text-align: left; padding: 13px 16px; border-bottom: 1px solid var(--line-soft); vertical-align: top; font-size: 14.5px; line-height: 1.65; }
+  table { border-collapse: collapse; width: 100%; min-width: 820px; }
+  th, td { text-align: left; padding: 13px 15px; border-bottom: 1px solid var(--line-soft); vertical-align: top; font-size: 14px; line-height: 1.65; }
   thead th {
-    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em;
+    font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em;
     text-transform: uppercase; color: var(--ink-soft); font-weight: 600;
     background: var(--surface-2); border-bottom: 1px solid var(--line);
-    position: sticky; top: 0;
   }
   tbody tr:last-child td { border-bottom: 0; }
-  td.step { font-family: var(--f-mono); font-weight: 600; font-size: 12.5px; color: var(--accent); white-space: nowrap; font-variant-numeric: tabular-nums; }
-  td.svc { color: var(--ink-mid); }
+  td.n { font-family: var(--f-mono); font-weight: 600; font-size: 12.5px; color: var(--ink-soft); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  td.st { font-weight: 700; color: var(--ink); }
+  td.ev { font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-soft); white-space: nowrap; }
+  .pill {
+    display: inline-block; font-size: 11.5px; font-weight: 700;
+    padding: 2px 9px; border-radius: 2px; white-space: nowrap;
+  }
+  .p-own  { background: var(--own-wash);  color: var(--own);  border: 1px solid var(--own); }
+  .p-goog { background: var(--goog-wash); color: var(--goog); border: 1px solid var(--goog); }
+  .p-unk  { background: var(--unk-wash);  color: var(--unk);  border: 1px solid var(--unk); }
+  .p-new  { background: var(--new-wash);  color: var(--new);  border: 1px solid var(--new); }
+  tr.r-goog td { background: var(--goog-wash); }
+  tr.r-new  td { background: var(--new-wash); }
+  td.osm { color: var(--ink-mid); }
+  td.osm b { color: var(--ink); }
   code {
     font-family: var(--f-mono); font-size: 0.87em; background: var(--surface-2);
     border: 1px solid var(--line-soft); padding: 1px 5px; border-radius: 3px; color: var(--ink);
   }
-  .flagrow td { background: var(--sev-1-wash); }
-  .flagrow td.step { color: var(--sev-1); }
 
-  /* ---- tier blocks ---- */
-  .tier { margin-bottom: 44px; }
-  .tier-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 2px solid var(--line); margin-bottom: 4px; }
-  h3 { font-family: var(--f-sans); font-weight: 900; font-size: 19px; margin: 0; letter-spacing: 0.01em; }
-  .tier-a h3 { color: var(--sev-1); }
-  .tier-b h3 { color: var(--sev-2); }
-  .tier-c h3 { color: var(--sev-3); }
-  .tier-note { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.05em; color: var(--ink-soft); }
+  .callout {
+    margin-top: 22px; padding: 20px 24px; background: var(--accent-wash);
+    border: 1px solid var(--accent);
+  }
+  .callout p { margin: 0; font-size: 14.5px; line-height: 1.8; color: var(--ink-mid); }
+  .callout p + p { margin-top: 10px; }
+  .callout b { color: var(--ink); font-weight: 700; }
 
-  .item { display: grid; grid-template-columns: 34px 1fr; gap: 0 16px; padding: 18px 0; border-bottom: 1px solid var(--line-soft); align-items: start; }
-  .item-n { font-family: var(--f-mono); font-size: 13px; font-weight: 600; color: var(--ink-soft); padding-top: 3px; }
-  .tier-a .item-n { color: var(--sev-1); }
-  .tier-b .item-n { color: var(--sev-2); }
-  .tier-c .item-n { color: var(--sev-3); }
-  .item-t { margin: 0 0 5px; font-weight: 700; font-size: 15.5px; line-height: 1.6; }
-  .item-d { margin: 0; font-size: 14.5px; line-height: 1.75; color: var(--ink-mid); }
-  .item-d b { color: var(--ink); font-weight: 700; }
-  .ref { font-family: var(--f-mono); font-size: 11px; color: var(--ink-soft); letter-spacing: 0.04em; white-space: nowrap; margin-left: 4px; }
+  /* the blocked-merchant story */
+  .story { background: var(--surface); border: 1px solid var(--line); padding: 0; }
+  .story-hd { padding: 26px 30px 20px; border-bottom: 1px solid var(--line); }
+  .story-hd h3 {
+    font-family: var(--f-serif); font-weight: 700; margin: 0 0 10px;
+    font-size: clamp(19px, 2.6vw, 23px); line-height: 1.5; text-wrap: balance;
+  }
+  .story-hd p { margin: 0; font-size: 14.5px; color: var(--ink-mid); line-height: 1.8; }
+  .chain { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .chain > div { padding: 20px 22px; border-right: 1px solid var(--line-soft); }
+  .chain > div:last-child { border-right: 0; }
+  .chain .k { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.1em; color: var(--ink-soft); display: block; margin-bottom: 8px; }
+  .chain .v { font-size: 14px; font-weight: 700; line-height: 1.55; margin: 0 0 6px; }
+  .chain .w { font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+  .chain .stop { color: var(--goog); }
 
-  /* ---- questions ---- */
-  .asks { background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--ask); padding: 6px 30px 26px; }
-  .ask { display: grid; grid-template-columns: 34px 1fr; gap: 0 14px; padding: 15px 0; border-bottom: 1px solid var(--line-soft); align-items: start; }
+  .cases { display: grid; gap: 10px; margin-top: 22px; }
+  .case {
+    display: grid; grid-template-columns: 26px 1fr; gap: 0 14px;
+    background: var(--goog-wash); padding: 14px 18px; align-items: start;
+  }
+  .case .x { color: var(--goog); font-weight: 700; font-size: 15px; line-height: 1.6; }
+  .case p { margin: 0; font-size: 14px; line-height: 1.7; color: var(--ink); }
+  .case b { font-weight: 700; }
+
+  /* benefits */
+  .bens { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .ben { background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--own); padding: 20px 22px; }
+  .ben .k { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--own); display: block; margin-bottom: 9px; }
+  .ben h4 { margin: 0 0 8px; font-size: 15.5px; font-weight: 700; line-height: 1.5; }
+  .ben p { margin: 0; font-size: 13.5px; color: var(--ink-mid); line-height: 1.75; }
+  .ben.warn { border-top-color: var(--unk); }
+  .ben.warn .k { color: var(--unk); }
+
+  /* questions */
+  .asks { background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--unk); padding: 6px 30px 24px; }
+  .ask { display: grid; grid-template-columns: 32px 1fr; gap: 0 14px; padding: 16px 0; border-bottom: 1px solid var(--line-soft); align-items: start; }
   .ask:last-child { border-bottom: 0; }
-  .ask-n { font-family: var(--f-mono); font-size: 14px; font-weight: 600; color: var(--ask); padding-top: 2px; }
+  .ask-n { font-family: var(--f-mono); font-size: 13.5px; font-weight: 600; color: var(--unk); padding-top: 2px; }
   .ask-q { margin: 0 0 4px; font-weight: 700; font-size: 15.5px; line-height: 1.6; }
   .ask-w { margin: 0; font-size: 13.5px; color: var(--ink-soft); line-height: 1.7; }
 
-  /* ---- closing ---- */
   .close { background: var(--accent-wash); border: 1px solid var(--accent); padding: 30px 32px; }
-  .close h4 { font-family: var(--f-serif); font-weight: 700; font-size: clamp(19px, 2.6vw, 23px); margin: 0 0 16px; line-height: 1.5; color: var(--ink); text-wrap: balance; }
+  .close h4 { font-family: var(--f-serif); font-weight: 700; font-size: clamp(19px, 2.6vw, 24px); margin: 0 0 16px; line-height: 1.5; text-wrap: balance; }
   .close p { margin: 0 0 14px; font-size: 15px; line-height: 1.8; color: var(--ink-mid); }
   .close p:last-child { margin-bottom: 0; }
   .close b { color: var(--ink); font-weight: 700; }
-
-  .fork { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 22px 0; }
-  .fork > div { background: var(--surface); border: 1px solid var(--line); padding: 20px 22px; }
-  .fork .lbl { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); display: block; margin-bottom: 8px; }
-  .fork .hd { font-weight: 700; font-size: 15px; margin: 0 0 8px; line-height: 1.6; }
-  .fork .bd { margin: 0; font-size: 14px; color: var(--ink-mid); line-height: 1.7; }
 
   footer {
     margin-top: 66px; padding-top: 20px; border-top: 1px solid var(--line);
@@ -203,9 +238,9 @@
   @media (max-width: 620px) {
     .wrap { padding: 0 18px 72px; }
     .masthead { padding-top: 44px; }
-    .verdict, .close { padding: 24px 20px; }
-    .asks { padding: 6px 20px 20px; }
-    .fork { grid-template-columns: 1fr; }
+    .close, .correction { padding: 22px 20px; }
+    .asks { padding: 6px 20px 18px; }
+    .story-hd { padding: 22px 20px 18px; }
   }
 </style>
 
@@ -214,273 +249,310 @@
   <header class="masthead">
     <p class="eyebrow">
       <span>ResoMap</span><span class="sep">/</span>
-      <span>地圖服務評估</span><span class="sep">/</span>
-      <span>Google Maps → OpenStreetMap</span><span class="sep">/</span>
+      <span>前台實測流程 × 地圖服務評估</span><span class="sep">/</span>
+      <span>第二版</span><span class="sep">/</span>
       <span>2026.08.28</span>
     </p>
-    <h1>換掉的不是底圖，<br>是景點資料的來源</h1>
+    <h1>換 OSM，只有兩步會變</h1>
     <p class="standfirst">
-      群組要求「先列出目前用 Google Map 的操作流程，才能比對改成 OSM 會犧牲什麼」。
-      以下依 21 步實測流程，逐一標出每個 Google 觸點，並分三級評估遷移代價。
-      <strong>結論先講：真正的風險不在地圖長什麼樣，在景點的識別與資料從哪來。</strong>
+      依陳醫師的方法重做：先把商家在前台<strong>實際怎麼操作</strong>逐步列出來，
+      每一步標記是 ResoMap 自己的資料、是依賴 Google 地點搜尋、還是從前台無法確認，
+      再看換成 OpenStreetMap 之後哪一步會不同。
+      <strong>結論：12 步裡只有 2 步真的碰到 Google，其餘 9 步是 ResoMap 自己的商業流程，不應該因為換底圖而改變。</strong>
     </p>
-    <div class="quote">
-      <p>「這可能還是要等梓康列出用 google map 的 app 目前的操作流程列出來，才能比對改成 open street 後會犧牲甚麼」</p>
-      <span class="who">群組訊息・本文即是這份清單</span>
+
+    <div class="correction">
+      <span class="lbl">修正前一版</span>
+      <p>
+        前一版把整份評估架在「景點主鍵可能是 <code>place_id</code>」這個假設上，
+        結論寫成「這不是換底圖，是換資料庫」。<b>那個框架把影響範圍講得太大了。</b>
+      </p>
+      <p>
+        主鍵那一題仍然是真的、也仍然要問——但它是<b>一項有界的工程任務</b>，
+        不是整條流程都建在 Google 上。訂閱、圖片、文案、語音、送審、審核、上架
+        這些本來就是 ResoMap 自己的東西，換地圖服務動不到它們。
+      </p>
     </div>
   </header>
 
-  <div class="verdict">
-    <p>如果景點是用 Google 的 place_id 當主鍵，這就不是換底圖，是換資料庫。</p>
-    <p class="sub">
-      從實測流程可以看到：商家在步驟 9 搜尋「香記烤鴨」時，這個景點在系統裡還沒有任何語音，
-      卻已經有完整店名與「40250台灣臺中市南區國光里台中路252號」這種 Google 格式的地址。
-      這代表景點很可能不是自己建的，而是從 Google Places 長出來的。
-      若是如此，遷移成本要算的是資料工程，不是前端換個圖層——而且這件事本身也牽涉 Google 的條款限制。
-    </p>
+  <div class="tally">
+    <div><b class="c-own">9</b><span>ResoMap 自己的商業流程<br>換 OSM 完全不變</span></div>
+    <div><b class="c-goog">2</b><span>真正依賴 Google 地點搜尋<br>換 OSM 會變的就這兩步</span></div>
+    <div><b class="c-new">1</b><span>目前不存在、換 OSM 後<br><em>必須</em>補上的一步</span></div>
+    <div><b>3</b><span>從前台無法確認<br>需工程師回覆</span></div>
   </div>
 
-  <!-- ============ INVENTORY ============ -->
+  <!-- ============ FLOW ============ -->
   <section>
     <div class="sec-head">
       <span class="sec-num">01</span>
-      <h2>目前流程的 Google 觸點清單</h2>
+      <h2>前台實測流程，逐步標記</h2>
     </div>
     <p class="sec-sub">
-      對照 21 步商家訂閱流程實測截圖逐格檢查。紅底列為「換掉會直接壞掉」的項目。
-      標示「待確認」者是截圖看不出來、必須向工程師求證的部分。
+      「實測對應」欄位是這一步在 21 步稽核截圖裡的編號，每一項判斷都可以回去查證。
+      流程順序依<strong>實際操作</strong>排列，不是依產品文件應該長的樣子。
     </p>
+
+    <div class="legend">
+      <span><i class="dot d-own"></i>ResoMap 自己的資料與流程</span>
+      <span><i class="dot d-goog"></i>依賴 Google 地點搜尋</span>
+      <span><i class="dot d-unk"></i>從前台無法確認</span>
+      <span><i class="dot d-new"></i>目前不存在的一步</span>
+    </div>
 
     <div class="tablewrap">
       <table>
         <thead>
           <tr>
-            <th style="width:96px">步驟</th>
-            <th style="width:30%">畫面上看到的</th>
-            <th>背後用到 Google 的什麼</th>
+            <th style="width:52px">#</th>
+            <th style="width:20%">前台實際操作</th>
+            <th style="width:96px">實測對應</th>
+            <th style="width:132px">歸屬</th>
+            <th>換成 OSM 之後</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="step">01 / 08 / 09</td>
-            <td>地圖底圖，左下角有 Google 浮水印</td>
-            <td class="svc">Maps SDK for iOS／Android。道路、水系（景美溪）、行政區塊的向量圖磚與中文標註全部由 Google 繪製。</td>
+            <td class="n">1</td>
+            <td class="st">訂閱付款</td>
+            <td class="ev">步驟 3–6</td>
+            <td><span class="pill p-own">ResoMap</span></td>
+            <td class="osm">走 Apple 內購，跟地圖完全無關。<b>完全不變。</b></td>
+          </tr>
+          <tr class="r-goog">
+            <td class="n">2</td>
+            <td class="st">搜尋店家</td>
+            <td class="ev">步驟 9</td>
+            <td><span class="pill p-goog">依賴 Google</span></td>
+            <td class="osm"><b>會變，而且是最主要的一步。</b>搜「香記烤鴨」搜得到，但當下這個景點在系統裡還沒有任何語音——若搜的是自家資料庫，一個沒有內容的店不會出現在那裡。改 OSM 後，台灣小型商家搜不到的比例會明顯上升。</td>
+          </tr>
+          <tr class="r-goog">
+            <td class="n">3</td>
+            <td class="st">找到店家：帶出店名與地址</td>
+            <td class="ev">步驟 10</td>
+            <td><span class="pill p-goog">依賴 Google</span></td>
+            <td class="osm"><b>會變。</b>目前帶出「40250台灣臺中市南區國光里台中路252號」——郵遞區號在前、有「里」、國名在前，是 Google 的地址格式。OSM 回傳的地址常缺門牌或缺里，需要允許商家自己補。</td>
+          </tr>
+          <tr class="r-new">
+            <td class="n">4</td>
+            <td class="st">建立景點／商家</td>
+            <td class="ev">目前沒有</td>
+            <td><span class="pill p-new">目前不存在</span></td>
+            <td class="osm"><b>換 OSM 必須新增這一步。</b>實測流程裡商家從頭到尾沒有「建立景點」這個動作——景點已經存在了（搜尋時就有）。目前的產品沒有任何一條路可以建立一間 Google 上沒有的店。OSM 版需要：<b>搜不到 → 手動輸入店名、地址、地圖選點 → 建立商家</b>。</td>
           </tr>
           <tr>
-            <td class="step">08</td>
-            <td>「文化部文化資產園區（原臺中酒廠）」<br>藍字藍色圖釘</td>
-            <td class="svc">Google 自有 POI 圖層。這不是你們的景點，是底圖自己帶的地標——換 OSM 後這層內容整個換人。</td>
+            <td class="n">5</td>
+            <td class="st">選景點類型（一般／商家）</td>
+            <td class="ev">步驟 12</td>
+            <td><span class="pill p-own">ResoMap</span></td>
+            <td class="osm">決定是否需要付費才能上架，是 ResoMap 自己的商業規則。<b>不變。</b></td>
           </tr>
           <tr>
-            <td class="step">09</td>
-            <td>地圖上的公車站圖示</td>
-            <td class="svc">Google 大眾運輸圖層。OSM 標準圖層沒有對等呈現。</td>
-          </tr>
-          <tr class="flagrow">
-            <td class="step">09</td>
-            <td>搜尋框輸入「香記烤鴨」→ 出現紅色圖釘</td>
-            <td class="svc"><b>Places Text Search／Autocomplete（待確認）。</b>這是商家目前找到自己店家的唯一路徑。搜到當下該景點尚無任何語音，強烈暗示搜的是 Google 而非自家資料庫。</td>
+            <td class="n">6</td>
+            <td class="st">上傳語音檔</td>
+            <td class="ev">步驟 11</td>
+            <td><span class="pill p-own">ResoMap</span></td>
+            <td class="osm">音檔存在自家儲存、有自家的時長規則（30 秒–5 分鐘）。<b>不變。</b></td>
           </tr>
           <tr>
-            <td class="step">01</td>
-            <td>「顯示周邊景點」按鈕</td>
-            <td class="svc"><b>待確認：</b>打 Places Nearby Search，還是查自家景點資料庫的經緯度範圍？兩者的遷移代價差很多。</td>
-          </tr>
-          <tr class="flagrow">
-            <td class="step">10 – 21</td>
-            <td>景點名稱「香記烤鴨」「挪威森林新店精品館」「家樂福 新店店」</td>
-            <td class="svc"><b>Places 回傳的 name。</b>這些名稱同時出現在 App 前台、後台景點管理、後台語音管理三處，代表已寫入自家資料庫。</td>
-          </tr>
-          <tr class="flagrow">
-            <td class="step">10</td>
-            <td>「40250台灣臺中市南區國光里台中路252號」</td>
-            <td class="svc"><b>Google 的 formatted_address。</b>含郵遞區號、含「里」、國名在前——這是 Google 台灣地址格式的特徵，不是使用者手打的。</td>
+            <td class="n">7</td>
+            <td class="st">上傳導覽配圖</td>
+            <td class="ev">步驟 13</td>
+            <td><span class="pill p-own">ResoMap</span></td>
+            <td class="osm">商家自己拍、自己傳，不是 Google Places 的照片。<b>不變。</b></td>
           </tr>
           <tr>
-            <td class="step">10 / 16 / 18 / 21</td>
-            <td>詳情頁右上角的地圖圖示</td>
-            <td class="svc"><b>待確認：</b>跳轉 Google Maps App 導航，還是內嵌地圖？若是跳轉，換 OSM 後這顆按鈕沒有等價替代品。</td>
+            <td class="n">8</td>
+            <td class="st">填寫導覽名稱與介紹文案</td>
+            <td class="ev">步驟 13–14</td>
+            <td><span class="pill p-own">ResoMap</span></td>
+            <td class="osm">商家自己寫（實測 506 字）。<b>不變。</b></td>
           </tr>
           <tr>
-            <td class="step">01 / 08 / 09</td>
-            <td>藍色定位點、右上角回到定位鍵</td>
-            <td class="svc">定位本身來自系統 GPS，但相機控制與座標投影走 Maps SDK。這部分替換成本低。</td>
-          </tr>
-          <tr class="flagrow">
-            <td class="step">全流程</td>
-            <td>（畫面上看不到）</td>
-            <td class="svc"><b>景點的唯一識別鍵。</b>若是 Google place_id，則語音、認領關係、審核紀錄全部間接綁在 Google 身上。<b>這是整份評估最關鍵的一格，必須先問到答案。</b></td>
+            <td class="n">9</td>
+            <td class="st">送審</td>
+            <td class="ev">步驟 15</td>
+            <td><span class="pill p-own">ResoMap</span></td>
+            <td class="osm"><b>不變。</b></td>
           </tr>
           <tr>
-            <td class="step">全流程</td>
-            <td>（畫面上看不到）</td>
-            <td class="svc"><b>待確認：</b>有沒有用到 Places 的照片、評分、營業時間、電話？目前截圖中沒出現，但要確認資料庫裡有沒有存。</td>
+            <td class="n">10</td>
+            <td class="st">後台審核通過</td>
+            <td class="ev">步驟 19</td>
+            <td><span class="pill p-own">ResoMap</span></td>
+            <td class="osm"><b>不變。</b></td>
+          </tr>
+          <tr>
+            <td class="n">11</td>
+            <td class="st">後台開放認領 → 商家認領</td>
+            <td class="ev">步驟 20–21</td>
+            <td><span class="pill p-own">ResoMap</span> <span class="pill p-unk">綁定 ID 待確認</span></td>
+            <td class="osm">認領這個機制本身是 ResoMap 的。<b>唯一的風險是它綁在哪個 ID 上</b>——若綁 Google <code>place_id</code>，遷移時要重新對應；若綁自家 ID，完全不變。<b>這是主鍵那一題唯一真正落地的地方。</b></td>
+          </tr>
+          <tr>
+            <td class="n">12</td>
+            <td class="st">前台顯示與播放</td>
+            <td class="ev">步驟 20b</td>
+            <td><span class="pill p-own">ResoMap</span></td>
+            <td class="osm">能不能播由認領狀態決定（未認領就跳「此景點未被管理」）。這是自家邏輯。<b>不變。</b></td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <div class="callout">
+      <p>
+        <b>順帶一個發現：認領的位置跟大家想的不一樣。</b>
+        討論裡把流程講成「搜尋 → 找到店家 → 認領 → 建立景點」，
+        但實測下來<b>認領是第 11 步，不是第 4 步</b>——排在上傳、送審、後台審核全部做完之後。
+      </p>
+      <p>
+        也就是說：商家是先把語音、照片、文案全部做完、等審核過了，
+        才被允許認領自己的店。這跟直覺完全相反，也是原稽核第 18 步那個死路的來源。
+      </p>
+    </div>
   </section>
 
-  <!-- ============ SACRIFICE ============ -->
+  <!-- ============ THE REAL PROBLEM ============ -->
   <section>
     <div class="sec-head">
       <span class="sec-num">02</span>
-      <h2>改成 OSM 之後，會犧牲什麼</h2>
+      <h2>Google 版真正的問題：新開的店進不來</h2>
     </div>
     <p class="sec-sub">
-      分三級：直接壞掉的、明顯降級的、以及會變好的。
-      「犧牲」這個詞只涵蓋前兩級——但第一級嚴格說不是犧牲，是必須重做。
+      這一點比「底圖好不好看」重要得多，而且是<strong>目前就在發生</strong>的商業損失，不是遷移後才會有的風險。
     </p>
 
-    <div class="tier tier-a">
-      <div class="tier-head">
-        <h3>A ・ 直接壞掉（不是犧牲，是要重做）</h3>
-        <span class="tier-note">必須先解決才能談遷移</span>
+    <div class="story">
+      <div class="story-hd">
+        <h3>一家上個月才開的餐廳，想付錢做語音導覽——但他做不到。</h3>
+        <p>
+          因為 ResoMap 的第 2 步是搜 Google。Google 還沒收錄這家店，
+          所以商家在 ResoMap 裡搜不到自己，整條付費流程從第 2 步就走不下去。
+        </p>
       </div>
-
-      <div class="item">
-        <div class="item-n">A1</div>
+      <div class="chain">
         <div>
-          <p class="item-t">景點主鍵失效，已上傳的語音與認領關係全部要重新對應<span class="ref">全流程</span></p>
-          <p class="item-d">
-            如果景點是用 Google place_id 當 key，換掉 Google 就等於整張景點表失去識別。
-            <b>已上傳的語音、已審核的紀錄、已認領的商家關係，全部需要一次資料遷移與人工比對。</b>
-            這是最大的一筆帳，也是最容易被當成「換個地圖套件」而低估的。
-            OSM 有自己的 <code>node/way/relation ID</code>，但兩邊沒有官方對照表，
-            台灣的商家資料更沒有可靠的自動 mapping。
-          </p>
+          <span class="k">1</span>
+          <p class="v">餐廳新開幕</p>
+          <p class="w">最需要曝光、最願意付錢做導覽的時候。</p>
         </div>
-      </div>
-
-      <div class="item">
-        <div class="item-n">A2</div>
         <div>
-          <p class="item-t">商家搜不到自己的店，付費流程從第 9 步就斷掉<span class="ref">步驟 09</span></p>
-          <p class="item-d">
-            打字搜尋是商家目前找到自己的<b>唯一</b>路徑。
-            OSM 在台灣的商家（尤其小型餐飲、旅宿、禮品店）覆蓋率遠低於 Google，
-            很多店根本不存在於 OSM 資料庫。
-            <b>付費商家搜不到自己 = 整條訂閱流程無法完成</b>，而這正是這個 App 賣的東西。
-          </p>
+          <span class="k">2</span>
+          <p class="v stop">ResoMap 搜不到</p>
+          <p class="w">因為 Google 上還沒有這個地點。</p>
         </div>
-      </div>
-
-      <div class="item">
-        <div class="item-n">A3</div>
         <div>
-          <p class="item-t">地址格式不穩定，會缺門牌、缺里、順序不同<span class="ref">步驟 10</span></p>
-          <p class="item-d">
-            OSM 的地理編碼（Nominatim）在台灣回傳的地址常缺項，格式也不一致。
-            步驟 10 那種完整地址不一定拿得回來。
-            這個欄位目前顯示在 App 詳情頁與後台三個地方，會是很明顯的體感退步。
-          </p>
+          <span class="k">3</span>
+          <p class="v">先去登錄 Google 商家</p>
+          <p class="w">填資料、等 Google 審核、可能要驗證明信片。</p>
+        </div>
+        <div>
+          <span class="k">4</span>
+          <p class="v">等 Google 通過</p>
+          <p class="w">數天到數週不等，而且不保證會過。</p>
+        </div>
+        <div>
+          <span class="k">5</span>
+          <p class="v">才回來用 ResoMap</p>
+          <p class="w">如果那時候他還記得、還想付這筆錢。</p>
         </div>
       </div>
     </div>
 
-    <div class="tier tier-b">
-      <div class="tier-head">
-        <h3>B ・ 明顯降級（這才是真正的「犧牲」）</h3>
-        <span class="tier-note">可以接受，但要先讓決策者知道</span>
-      </div>
-
-      <div class="item">
-        <div class="item-n">B1</div>
-        <div>
-          <p class="item-t">底圖會「變空」，使用者的方位感下降<span class="ref">步驟 08</span></p>
-          <p class="item-d">
-            步驟 08 畫面上那些地標、夜市、園區，是 Google 自己標的。
-            OSM 標準圖層有一部分，但商家類 POI 明顯稀疏。
-            對一個「靠地圖找景點」的 App 來說，底圖空掉會直接影響探索體驗。
-          </p>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-n">B2</div>
-        <div>
-          <p class="item-t">中文標註不完整，部分路名只有英文或拼音</p>
-          <p class="item-d">
-            OSM 台灣資料的 <code>name:zh</code> 標註覆蓋不一致。
-            目前 Google 底圖的中文道路標註是完整的，換過去會出現中英夾雜。
-          </p>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-n">B3</div>
-        <div>
-          <p class="item-t">大眾運輸圖層要自己接<span class="ref">步驟 09</span></p>
-          <p class="item-d">
-            公車站圖示要改接公部門資料（例如 TDX 運輸資料流通服務），
-            OSM 標準圖層沒有等價呈現。這是額外的開發與維運工作。
-          </p>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-n">B4</div>
-        <div>
-          <p class="item-t">導航跳轉沒有對等替代<span class="ref">步驟 10 / 16 / 18 / 21</span></p>
-          <p class="item-d">
-            如果詳情頁那顆地圖圖示目前是丟給 Google Maps App 導航，
-            OSM 沒有同等普及的導航 App 生態。
-            要嘛繼續跳 Google Maps（那這一項就沒省到），要嘛接第三方、體驗變差。
-          </p>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-n">B5</div>
-        <div>
-          <p class="item-t">照片、評分、營業時間、電話全部沒有</p>
-          <p class="item-d">
-            如果目前有用 Places 的這些欄位，OSM 完全沒有對應資料。
-            <b>需先確認資料庫裡到底存了哪些欄位</b>——截圖上看不出來。
-          </p>
-        </div>
-      </div>
+    <div class="callout" style="margin-top:20px">
+      <p>
+        <b>ResoMap 現在的獲客資格，是由 Google 決定的。</b>
+        平台不能自己決定要服務誰——只能服務「已經被 Google 收錄的店」。
+        而且這不是邊緣情況，以下每一種都會踩到：
+      </p>
     </div>
 
-    <div class="tier tier-c">
-      <div class="tier-head">
-        <h3>C ・ 會變好的（換過去的真正理由）</h3>
-        <span class="tier-note">但要注意 ODbL 不等於無條件免費</span>
-      </div>
+    <div class="cases">
+      <div class="case"><span class="x">✕</span><p><b>新開幕的店</b>——Google 還沒收錄，最想曝光的客群反而被擋在門外。</p></div>
+      <div class="case"><span class="x">✕</span><p><b>夜市攤位、市場攤商、路邊小店</b>——很多根本不會出現在 Google Places。</p></div>
+      <div class="case"><span class="x">✕</span><p><b>改過名的店</b>——Google 還是舊招牌，商家在 ResoMap 搜到的是自己的舊名字。</p></div>
+      <div class="case"><span class="x">✕</span><p><b>搬過家的店</b>——地址是舊的，帶進 ResoMap 的地址也跟著錯，而商家改不掉。</p></div>
+      <div class="case"><span class="x">✕</span><p><b>沒有店面的景點</b>——廟宇分殿、私人園區、步道涼亭、地方故事點位，Google 上常常沒有。</p></div>
+      <div class="case"><span class="x">✕</span><p><b>Google 上重複或錯誤的 POI</b>——商家認領到錯的那一個，而平台沒有工具能修。</p></div>
+    </div>
+  </section>
 
-      <div class="item">
-        <div class="item-n">C1</div>
-        <div>
-          <p class="item-t">Maps SDK 與 Places 的帳單歸零</p>
-          <p class="item-d">
-            Places Text Search 通常是這類 App 帳單裡最貴的一項，
-            而步驟 9 顯示它被放在最高頻的路徑上。
-            <b>先把目前每月帳單與各 API 佔比拉出來，這個數字才是決策依據。</b>
-          </p>
-        </div>
-      </div>
+  <!-- ============ OSM UPSIDE ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2>換 OSM 有哪些好處</h2>
+    </div>
+    <p class="sec-sub">
+      上面那些「進不來」的情況，換 OSM 之後大部分不是變好一點，而是<strong>從不可能變成可能</strong>。
+    </p>
 
-      <div class="item">
-        <div class="item-n">C2</div>
-        <div>
-          <p class="item-t">解掉一個目前存在的條款風險</p>
-          <p class="item-d">
-            Google Maps Platform 條款對「快取 Places 內容」與「把 Google 資料顯示在非 Google 底圖上」有明確限制。
-            <b>目前這個 App 把 Google 的店名與地址存進自家景點表、還拿來當付費商品的一部分販售</b>——
-            這件事本身就值得法務看一眼。換成 OSM 反而解掉這個風險。
-          </p>
-        </div>
+    <div class="bens">
+      <div class="ben">
+        <span class="k">01</span>
+        <h4>可以自己建立地點</h4>
+        <p>
+          OSM 允許任何人新增節點。ResoMap 可以直接做成「搜不到 → 手動輸入店名、地址、地圖選點 → 建立商家」，
+          當場把人留住，而不是請他先去用 Google。這是最大的一項。
+        </p>
       </div>
-
-      <div class="item">
-        <div class="item-n">C3</div>
-        <div>
-          <p class="item-t">但 OSM 是 ODbL，有 share-alike 義務</p>
-          <p class="item-d">
-            不是「免費隨便用」。若把 OSM 資料與自家資料合併成衍生資料庫，
-            可能被要求以同樣授權釋出。<b>換之前要先確認你們的景點資料模型會不會落入這個範圍。</b>
-          </p>
-        </div>
+      <div class="ben">
+        <span class="k">02</span>
+        <h4>新開的店當天就能上架</h4>
+        <p>
+          不用等 Google 審核、不用等明信片驗證。開幕當天就能買訂閱、建立地點、上傳語音、開始導覽。
+        </p>
+      </div>
+      <div class="ben">
+        <span class="k">03</span>
+        <h4>資料錯了可以自己修</h4>
+        <p>
+          店名改了、搬家了、地址少了門牌，平台自己就能改，不必去跟 Google 申訴再等它生效。
+          客服也終於有工具可以處理這類問題。
+        </p>
+      </div>
+      <div class="ben">
+        <span class="k">04</span>
+        <h4>沒有查詢配額與費用壓力</h4>
+        <p>
+          Places Text Search 是這類 App 帳單裡最貴的一項，而它正好在最高頻的路徑上。
+          沒有計費壓力之後，搜尋反而可以做得更好用（自動完成、模糊比對、附近優先）。
+        </p>
+      </div>
+      <div class="ben">
+        <span class="k">05</span>
+        <h4>資料可以合法留在自己手上</h4>
+        <p>
+          Google 條款限制快取 Places 內容、也限制把 Google 資料顯示在非 Google 底圖上。
+          目前把店名地址存進自家表、還當成付費商品的一部分販售，這件事值得法務看一眼。
+          換 OSM 之後這個顧慮消失。
+        </p>
+      </div>
+      <div class="ben">
+        <span class="k">06</span>
+        <h4>商家補的資料會變成平台資產</h4>
+        <p>
+          商家自己建的地點是 ResoMap 的資料，累積下來就是一份 Google 沒有的在地 POI 庫——
+          尤其是攤商、小店、地方景點這些 Google 覆蓋最差、而 ResoMap 最需要的類別。
+        </p>
+      </div>
+      <div class="ben warn">
+        <span class="k">注意</span>
+        <h4>OSM 的弱項要誠實承認</h4>
+        <p>
+          台灣的道路與門牌資料其實不差（政府資料有匯入過），弱的是<b>商家 POI</b> 與部分中文標註。
+          底圖會比 Google 空、公車站等圖層要自己接、導航跳轉沒有對等替代。
+          但商家 POI 正好是上面第 01、06 項可以自己補的部分。
+        </p>
+      </div>
+      <div class="ben warn">
+        <span class="k">注意</span>
+        <h4>ODbL 不等於無條件免費</h4>
+        <p>
+          OSM 採 ODbL 授權，有 share-alike 義務。若把 OSM 資料與自家資料合併成衍生資料庫，
+          可能被要求以同樣授權釋出。換之前要先確認資料模型會不會落入這個範圍。
+        </p>
       </div>
     </div>
   </section>
@@ -488,68 +560,40 @@
   <!-- ============ QUESTIONS ============ -->
   <section>
     <div class="sec-head">
-      <span class="sec-num">03</span>
-      <h2>先問到答案，才做得出比對</h2>
+      <span class="sec-num">04</span>
+      <h2>從前台無法確認、需要工程師回覆的</h2>
     </div>
     <p class="sec-sub">
-      以下八題從截圖無法判讀，必須由工程師回答。沒有前三題的答案，任何遷移估算都是猜的。
+      前一版列了八題。用流程逐步標記之後，真正卡住判斷的只剩這四題。
     </p>
 
     <div class="asks">
       <div class="ask">
         <div class="ask-n">01</div>
         <div>
-          <p class="ask-q">景點的主鍵是什麼？Google place_id，還是自家 UUID ＋ 經緯度？</p>
-          <p class="ask-w">這一題決定整個遷移是「換套件」還是「搬資料庫」，量級差一個數量級。</p>
+          <p class="ask-q">第 2 步的搜尋框，打的是 Google Places 還是自家景點資料庫？</p>
+          <p class="ask-w">實測時搜到的店還沒有任何語音內容，看起來是 Google。確認之後，第 2、3 步的判斷才算定案。</p>
         </div>
       </div>
       <div class="ask">
         <div class="ask-n">02</div>
         <div>
-          <p class="ask-q">景點的名稱與地址是「當下抓一次存起來」還是「每次即時打 API」？</p>
-          <p class="ask-w">存起來的話，牽涉 Google 條款的快取限制；即時打的話，牽涉每筆請求的費用。</p>
+          <p class="ask-q">第 11 步的認領，綁定的是 Google <code>place_id</code> 還是自家 ID？</p>
+          <p class="ask-w">這是主鍵那一題唯一真正落地的地方。若綁自家 ID，遷移只是換搜尋來源；若綁 <code>place_id</code>，已認領的資料要重新對應。</p>
         </div>
       </div>
       <div class="ask">
         <div class="ask-n">03</div>
         <div>
-          <p class="ask-q">搜尋框搜的是 Google Places，還是自家景點資料庫？</p>
-          <p class="ask-w">步驟 9 搜到「香記烤鴨」時它還沒有任何語音，看起來是搜 Google。若確認為是，A2 的風險成立。</p>
+          <p class="ask-q">店名與地址是搜尋當下存進自家資料庫，還是每次即時打 API？</p>
+          <p class="ask-w">存起來的話，遷移時舊資料可以原地保留，只有新建的走 OSM；即時打的話，換掉當天全部景點的名稱地址一起變。</p>
         </div>
       </div>
       <div class="ask">
         <div class="ask-n">04</div>
         <div>
-          <p class="ask-q">「顯示周邊景點」打的是 Nearby Search，還是查自家資料庫的座標範圍？</p>
-          <p class="ask-w">後者的話這個功能幾乎零遷移成本，前者的話要重做。</p>
-        </div>
-      </div>
-      <div class="ask">
-        <div class="ask-n">05</div>
-        <div>
-          <p class="ask-q">目前每月 Google Maps 帳單多少？哪一支 API 佔比最高？</p>
-          <p class="ask-w">如果省下的錢遠小於遷移工時，這個提案本身就不成立。</p>
-        </div>
-      </div>
-      <div class="ask">
-        <div class="ask-n">06</div>
-        <div>
-          <p class="ask-q">詳情頁右上角的地圖圖示，點下去是跳 Google Maps App 還是內嵌？</p>
-          <p class="ask-w">若是跳轉，即使底圖換成 OSM，這個依賴其實沒有消失。</p>
-        </div>
-      </div>
-      <div class="ask">
-        <div class="ask-n">07</div>
-        <div>
-          <p class="ask-q">資料庫裡除了名稱和地址，還存了哪些 Places 欄位？</p>
-          <p class="ask-w">照片、評分、營業時間、電話、類別——每一項在 OSM 都沒有等價來源。</p>
-        </div>
-      </div>
-      <div class="ask">
-        <div class="ask-n">08</div>
-        <div>
-          <p class="ask-q">存下來的 Google 資料保留多久？有沒有做定期清除？</p>
-          <p class="ask-w">這題是給法務的。答案若是「一直留著」，那換 OSM 就不只是省錢，是止血。</p>
+          <p class="ask-q">首頁的「顯示周邊景點」打的是 Nearby Search，還是查自家座標範圍？</p>
+          <p class="ask-w">後者幾乎零遷移成本，前者要重做。這是除了搜尋以外唯一可能還藏著 Google 呼叫的地方。</p>
         </div>
       </div>
     </div>
@@ -558,54 +602,34 @@
   <!-- ============ CLOSING ============ -->
   <section style="margin-bottom:0">
     <div class="sec-head">
-      <span class="sec-num">04</span>
-      <h2>這個比對的順序被搞反了</h2>
+      <span class="sec-num">05</span>
+      <h2>結論</h2>
     </div>
 
     <div class="close">
-      <h4>該先回答的不是「換 OSM 會犧牲什麼」，而是「這個 App 到底把地圖當成什麼」。</h4>
-
-      <div class="fork">
-        <div>
-          <span class="lbl">情境一</span>
-          <p class="hd">地圖只是一個「找到景點的介面」</p>
-          <p class="bd">
-            景點資料是你們自己的，地圖只負責顯示。
-            那 OSM 完全夠用，遷移是一次前端工作，
-            上面 A 級的風險大部分不存在。
-          </p>
-        </div>
-        <div>
-          <span class="lbl">情境二</span>
-          <p class="hd">地圖是「景點資料的來源」</p>
-          <p class="bd">
-            景點是從 Google Places 長出來的。
-            那這不是換底圖的問題，是整個資料模型建立在別人家的資料上，
-            而且還拿它收費。
-          </p>
-        </div>
-      </div>
-
+      <h4>ResoMap 真正的產品是語音導覽，地點只是掛語音的鉤子。</h4>
       <p>
-        從步驟 9 → 10 那一段可以看出來，<b>很可能是情境二</b>：
-        商家搜到「香記烤鴨」的時候，這個景點在系統裡還沒有任何語音，
-        卻已經有完整的店名和 Google 格式的地址。
+        訂閱、圖片、文案、語音、送審、審核、認領、上架——這九步是 ResoMap 的商業流程，
+        <b>換地圖服務動不到它們</b>。真正會變的只有「怎麼找到／建立一個地點」這件事。
       </p>
       <p>
-        如果是這樣，<b>換 OSM 犧牲的不是功能，是「你們原本不用自己建資料」這件事。</b>
-        這個成本要算的是資料工程與內容補齊，不是前端換個圖層。
+        而目前把這件事外包給 Google 的代價，不是底圖好不好看，是
+        <b>平台不能決定自己要服務誰</b>：Google 沒收錄的店，ResoMap 就收不了錢。
+        新開幕的餐廳、夜市攤位、地方景點——這些最需要導覽、也最沒有其他曝光管道的客群，
+        現在全部被擋在第 2 步。
       </p>
       <p>
-        而這件事跟訂閱流程稽核發現的是同一個病灶：
-        <b>訂閱綁帳號、內容綁景點、景點綁 Google，三層之間沒有一層是自己接起來的。</b>
-        地圖只是這條鏈上最外面、也最容易被看見的一環。
+        換 OSM 要付的代價是明確而有界的：<b>底圖會空一點、地址品質要靠自己補、
+        要新增一個「手動建立地點」的流程</b>。
+        換來的是「搜不到就自己建」——把一條目前完全走不通的路打開。
       </p>
     </div>
 
     <footer>
       評估依據：2026/08/26–08/27 商家訂閱流程實測截圖 21 張（含後台 2 張）。<br>
-      本文標示「待確認」者為截圖無法判讀、需工程師回覆的項目，未經確認前不應作為決策依據。<br>
-      不含遷移方案與工時估算——那要等第 01–03 題的答案。
+      本版依陳醫師的方法重做，取代第一版以「主鍵風險」為主軸的框架。<br>
+      標示「待確認」者為前台無法判讀、需工程師回覆的項目，未經確認前不應作為決策依據。<br>
+      不含遷移方案與工時估算——那要等第 01、02 題的答案。
     </footer>
   </section>
 

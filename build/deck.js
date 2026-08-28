@@ -806,233 +806,277 @@ section('E', '後台與收尾', '真正的關卡在商家看不到的地方：\n
 }
 
 // ============================================================ 27 APPENDIX DIVIDER
-section('F', '附錄：地圖服務評估', 'Google Maps → OpenStreetMap。\n換掉的不是底圖，是景點資料的來源。', '追加評估 ・ 2026.08.28');
+section('F', '附錄：地圖服務評估', '先列出商家在前台實際怎麼操作，再看換 OSM 哪一步會不同。\n結論：12 步裡只有 2 步真的碰到 Google。', '追加評估 ・ 第二版 ・ 2026.08.28');
 
-// ============================================================ 28 WHY + VERDICT
+// ============================================================ 28 REFRAME
 {
   const s = lightSlide();
-  head(s, { title: '為什麼要做這份比對', kicker: '評估緣起' });
-  s.addShape(pres.ShapeType.roundRect, { x: 0.6, y: 1.75, w: 5.6, h: 2.1, fill: { color: TINT }, rectRadius: 0.04 });
-  s.addText('「這可能還是要等梓康列出用 google map 的 app\n目前的操作流程列出來，才能比對改成 open\nstreet 後會犧牲甚麼」', {
-    x: 0.92, y: 2.0, w: 5.0, h: 1.15, fontFace: CJK, fontSize: 13.5, color: INK,
-    italic: true, lineSpacing: 23, margin: 0, isTextBox: true,
-  });
-  s.addText('群組訊息　本頁之後即是這份清單', {
-    x: 0.92, y: 3.28, w: 5.0, h: 0.3, fontFace: CJK, fontSize: 10.5, color: MUTE, margin: 0, isTextBox: true,
-  });
-  note(s, 0.6, 4.05, 5.6, 2.65, '這份評估做了什麼', [
-    '① 依 21 步實測流程，逐格標出每一個 Google 觸點',
-    '② 分三級評估遷移代價：壞掉／降級／變好',
-    '③ 列出截圖看不出來、必須問工程師的 8 個問題',
+  head(s, { title: '先修正前一版的框架', kicker: '評估方法' });
+  problem(s, 0.6, 1.75, 6.0, 2.35, '前一版把影響範圍講得太大了', [
+    '第一版整份架在「景點主鍵可能是 place_id」這個假設上，',
+    '結論寫成「這不是換底圖，是換資料庫」。',
     '',
-    '不含遷移方案與工時估算——那要等問題 1–3 的答案。',
-  ]);
-  problem(s, 6.7, 1.75, 6.0, 2.95, '結論先講', [
-    '如果景點是用 Google 的 place_id 當主鍵，',
-    '這就不是換底圖，是換資料庫。',
-    '',
-    '證據在步驟 9 → 10：商家搜到「香記烤鴨」的',
-    '當下，這個景點在系統裡還沒有任何語音，',
-    '卻已經有完整店名與 Google 格式的地址。',
-  ], 'dead');
-  problem(s, 6.7, 4.95, 6.0, 1.75, '所以真正的問題是', [
-    '換 OSM 犧牲的不是功能，',
-    '是「你們原本不用自己建資料」這件事。',
+    '主鍵那一題仍然是真的、也仍然要問——但它是一項有界的',
+    '工程任務，不是整條流程都建在 Google 上。',
   ], 'flag');
-  foot(s, '本文標示「待確認」者為截圖無法判讀、需工程師回覆的項目，未經確認前不應作為決策依據。');
-  s.addNotes('先把結論放前面：這不是換底圖的問題。');
+  note(s, 0.6, 4.3, 6.0, 2.4, '這一版改用逐步標記', [
+    '把商家在前台實際的每一步列出來，各自標記：',
+    '',
+    '① 這一步確定是 ResoMap 自己的資料',
+    '② 這一步依賴 Google 地點搜尋',
+    '③ 這一步從前台無法確認',
+    '④ 換 OSM 後這一步會有什麼不同',
+  ]);
+  const tally = [
+    ['9', 'ResoMap 自己的商業流程\n換 OSM 完全不變', TEAL],
+    ['2', '真正依賴 Google 地點搜尋\n會變的就這兩步', RED],
+    ['1', '目前不存在、換 OSM 後\n必須補上的一步', '2F4A7A'],
+    ['4', '從前台無法確認\n需工程師回覆', ORNG],
+  ];
+  tally.forEach((t, i) => {
+    const col = i % 2, row = Math.floor(i / 2);
+    const x = 6.8 + col * 3.0, y = 1.75 + row * 2.48;
+    s.addShape(pres.ShapeType.roundRect, { x, y, w: 2.85, h: 2.25, fill: { color: TINT }, rectRadius: 0.04 });
+    s.addText(t[0], {
+      x: x + 0.3, y: y + 0.3, w: 2.2, h: 0.85, fontFace: NUM, fontSize: 48, bold: true,
+      color: t[2], margin: 0, isTextBox: true, valign: 'middle',
+    });
+    s.addText(t[1], {
+      x: x + 0.3, y: y + 1.25, w: 2.3, h: 0.85, fontFace: CJK, fontSize: 11.5,
+      color: MUTE, lineSpacing: 17, margin: 0, isTextBox: true,
+    });
+  });
+  foot(s, '訂閱、圖片、文案、語音、送審、審核、上架這些本來就是 ResoMap 自己的東西，換地圖服務動不到它們。');
+  s.addNotes('先承認前一版框架過頭，再用逐步標記重做。');
 }
 
-// ============================================================ 29 TOUCHPOINT TABLE
+// ============================================================ 29 FLOW TABLE
 {
   const s = lightSlide();
-  head(s, { title: '目前流程的 Google 觸點清單', kicker: '對照 21 步實測截圖逐格檢查' });
+  head(s, { title: '前台實測流程，逐步標記', kicker: '依實際操作順序，非產品文件順序' });
 
-  const COLS = [1.45, 3.85, 6.8];
+  const COLS = [0.5, 3.05, 1.0, 1.75, 5.8];
   const X0 = 0.6;
-  const cx = [X0, X0 + COLS[0], X0 + COLS[0] + COLS[1]];
-  const HDY = 1.72, HDH = 0.44, ROWH = 0.5;
+  const cx = [X0];
+  for (let i = 0; i < COLS.length - 1; i++) cx.push(cx[i] + COLS[i]);
+  const HDY = 1.68, HDH = 0.36, ROWH = 0.386;
 
   s.addShape(pres.ShapeType.rect, { x: X0, y: HDY, w: 12.1, h: HDH, fill: { color: TINT } });
-  ['步驟', '畫面上看到的', '背後用到 Google 的什麼'].forEach((t, i) => {
+  ['#', '前台實際操作', '實測', '歸屬', '換成 OSM 之後'].forEach((t, i) => {
     s.addText(t, {
-      x: cx[i] + 0.18, y: HDY, w: COLS[i] - 0.3, h: HDH, fontFace: CJK, fontSize: 11.5, bold: true,
+      x: cx[i] + 0.14, y: HDY, w: COLS[i] - 0.24, h: HDH, fontFace: CJK, fontSize: 10.5, bold: true,
       color: MUTE, valign: 'middle', margin: 0, isTextBox: true,
     });
   });
 
+  const OWN = 'own', GOO = 'goo', NEW = 'new';
   const rows = [
-    ['01 / 08 / 09', '底圖、道路與水系中文標註', 'Maps SDK — 畫面左下角有 Google 浮水印', false],
-    ['08', '「文化部文化資產園區」藍字藍釘', 'Google 自有 POI 圖層 — 這不是你們的景點', false],
-    ['09', '公車站圖示', 'Google 大眾運輸圖層，OSM 標準圖層無等價呈現', false],
-    ['09', '搜尋「香記烤鴨」', 'Places Text Search — 商家找到自己的唯一路徑', true],
-    ['01', '「顯示周邊景點」按鈕', '待確認：打 Nearby Search，或查自家景點資料庫？', false],
-    ['10 – 21', '店名（前台與後台三處都有）', 'Places 的 name，已寫進自家資料庫', true],
-    ['10', '完整地址（含郵遞區號與「里」）', 'Google 的 formatted_address', true],
-    ['10 / 16 / 18 / 21', '右上角地圖圖示', '待確認：是否跳轉 Google Maps App 導航？', false],
-    ['全流程', '畫面上看不到', '景點的唯一識別鍵 — 最關鍵，必須先問到答案', true],
+    ['1',  '訂閱付款',              '步驟 3–6',   OWN, '走 Apple 內購，與地圖無關。完全不變'],
+    ['2',  '搜尋店家',              '步驟 9',     GOO, '會變：台灣小型商家搜不到的比例明顯上升'],
+    ['3',  '找到店家：帶出店名地址', '步驟 10',    GOO, '會變：地址常缺門牌或缺里，要讓商家能補'],
+    ['4',  '建立景點／商家',        '目前沒有',   NEW, '要新增：搜不到 → 手動輸入 → 地圖選點'],
+    ['5',  '選景點類型（一般／商家）', '步驟 12',  OWN, '自家商業規則。不變'],
+    ['6',  '上傳語音檔',            '步驟 11',    OWN, '自家儲存與時長規則。不變'],
+    ['7',  '上傳導覽配圖',          '步驟 13',    OWN, '商家自己拍、自己傳。不變'],
+    ['8',  '填寫名稱與介紹文案',    '步驟 13–14', OWN, '商家自己寫（實測 506 字）。不變'],
+    ['9',  '送審',                  '步驟 15',    OWN, '不變'],
+    ['10', '後台審核通過',          '步驟 19',    OWN, '不變'],
+    ['11', '後台開放認領 → 商家認領', '步驟 20–21', 'unk', '綁自家 ID 就不變；綁 place_id 要重新對應'],
+    ['12', '前台顯示與播放',        '步驟 20b',   OWN, '由認領狀態決定，自家邏輯。不變'],
   ];
+  const PILL = {
+    own: ['ResoMap', '235F45', 'E4EFE8'],
+    goo: ['依賴 Google', RED, REDT],
+    new: ['目前不存在', '2F4A7A', 'E5EAF3'],
+    unk: ['ResoMap／待確認', ORNG, ORNGT],
+  };
   rows.forEach((r, i) => {
     const y = HDY + HDH + i * ROWH;
-    s.addShape(pres.ShapeType.rect, {
-      x: X0, y, w: 12.1, h: ROWH,
-      fill: { color: r[3] ? REDT : (i % 2 ? 'FFFFFF' : 'FAFBFC') },
-    });
+    const kind = r[3];
+    const rowBg = kind === GOO ? REDT : kind === NEW ? 'E5EAF3' : (i % 2 ? 'FFFFFF' : 'FAFBFC');
+    s.addShape(pres.ShapeType.rect, { x: X0, y, w: 12.1, h: ROWH, fill: { color: rowBg } });
     s.addText(r[0], {
-      x: cx[0] + 0.18, y, w: COLS[0] - 0.28, h: ROWH, fontFace: NUM, fontSize: 10.5, bold: true,
-      color: r[3] ? RED : TEAL, valign: 'middle', margin: 0, isTextBox: true,
+      x: cx[0] + 0.1, y, w: COLS[0] - 0.16, h: ROWH, fontFace: NUM, fontSize: 10, bold: true,
+      color: MUTE, valign: 'middle', margin: 0, isTextBox: true,
     });
     s.addText(r[1], {
-      x: cx[1] + 0.18, y, w: COLS[1] - 0.3, h: ROWH, fontFace: CJK, fontSize: 11.5,
+      x: cx[1] + 0.14, y, w: COLS[1] - 0.24, h: ROWH, fontFace: CJK, fontSize: 10.5, bold: true,
       color: INK, valign: 'middle', margin: 0, isTextBox: true,
     });
     s.addText(r[2], {
-      x: cx[2] + 0.18, y, w: COLS[2] - 0.3, h: ROWH, fontFace: CJK, fontSize: 11.5,
-      color: r[3] ? RED : BODY, bold: !!r[3], valign: 'middle', margin: 0, isTextBox: true,
+      x: cx[2] + 0.1, y, w: COLS[2] - 0.16, h: ROWH, fontFace: CJK, fontSize: 9.5,
+      color: MUTE, valign: 'middle', margin: 0, isTextBox: true,
+    });
+    const p = PILL[kind];
+    s.addShape(pres.ShapeType.roundRect, {
+      x: cx[3] + 0.12, y: y + 0.055, w: COLS[3] - 0.3, h: ROWH - 0.11,
+      fill: { color: p[2] }, line: { color: p[1], width: 0.75 }, rectRadius: 0.02,
+    });
+    s.addText(p[0], {
+      x: cx[3] + 0.12, y: y + 0.055, w: COLS[3] - 0.3, h: ROWH - 0.11, align: 'center',
+      fontFace: CJK, fontSize: 9, bold: true, color: p[1], valign: 'middle', margin: 0, isTextBox: true,
+    });
+    s.addText(r[4], {
+      x: cx[4] + 0.14, y, w: COLS[4] - 0.24, h: ROWH, fontFace: CJK, fontSize: 10.5,
+      color: (kind === GOO || kind === NEW) ? INK : BODY, bold: (kind === GOO || kind === NEW),
+      valign: 'middle', margin: 0, isTextBox: true,
     });
   });
-  foot(s, '紅底列＝換掉會直接壞掉的項目。「待確認」＝截圖無法判讀，需工程師回覆。');
-  s.addNotes('這張表就是群組要的「操作流程列出來」。');
+  foot(s, '順帶一個發現：認領是第 11 步，不是第 4 步——排在上傳、送審、後台審核全部做完之後，跟直覺完全相反。');
+  s.addNotes('這張表就是陳醫師要的「前台實測流程逐步標記」。');
 }
 
-// ============================================================ 30 TIER A
+// ============================================================ 30 BLOCKED MERCHANT
 {
   const s = lightSlide();
-  head(s, { num: 'A', kicker: '遷移代價 ・ A 級', title: '直接壞掉：不是犧牲，是要重做', tone: 'dead' });
-  s.addImage({ path: IMG('c09_search'), x: 0.6, y: 1.72, w: 5.9, h: 1.06, shadow: sh() });
-  s.addImage({ path: IMG('c10_addr'), x: 0.6, y: 2.95, w: 5.9, h: 1.07, shadow: sh() });
-  s.addText('步驟 9 搜到這間店的當下，它在系統裡還沒有任何語音，卻已經有完整店名與「40250台灣臺中市南區國光里台中路252號」——郵遞區號在前、有「里」、國名在前，這是 Google formatted_address 的台灣格式，不是使用者手打的。', {
-    x: 0.6, y: 4.2, w: 5.9, h: 1.5, fontFace: CJK, fontSize: 12, color: BODY, lineSpacing: 19, margin: 0, isTextBox: true,
+  head(s, { num: '!', kicker: 'Google 版真正的問題', title: '新開的店，現在根本進不來', tone: 'dead' });
+  s.addShape(pres.ShapeType.roundRect, { x: 0.6, y: 1.72, w: 12.1, h: 1.35, fill: { color: REDT }, rectRadius: 0.04 });
+  s.addText('一家上個月才開的餐廳，想付錢做語音導覽——但他做不到。', {
+    x: 0.95, y: 1.9, w: 11.4, h: 0.42, fontFace: CJK, fontSize: 20, bold: true, color: RED, margin: 0, isTextBox: true,
   });
-  problem(s, 0.6, 5.75, 5.9, 0.95, '景點是 Google 給的，不是你們自己建的', ['這一格決定了下面三項的量級。'], 'dead');
-  problem(s, 6.8, 1.72, 5.9, 1.62, 'A1　景點主鍵失效', [
-    '已上傳的語音、審核紀錄、認領關係全部要重新對應。',
-    'OSM 的 ID 與 place_id 沒有官方對照表。',
-  ], 'dead');
-  problem(s, 6.8, 3.52, 5.9, 1.62, 'A2　商家搜不到自己的店', [
-    'OSM 在台灣的小型商家覆蓋率遠低於 Google。',
-    '搜不到自己＝訂閱流程從第 9 步就斷掉。',
-  ], 'dead');
-  problem(s, 6.8, 5.32, 5.9, 1.32, 'A3　地址格式不穩定', [
-    'Nominatim 在台灣常缺門牌、缺里、順序不同。',
-  ], 'dead');
-  foot(s, 'A 級嚴格說不是「犧牲」——是必須先解決，否則遷移無法進行。');
-  s.addNotes('A2 最致命：商家搜不到自己，整條付費流程就斷了。');
-}
+  s.addText('因為 ResoMap 的第 2 步是搜 Google。Google 還沒收錄這家店，所以商家在 ResoMap 裡搜不到自己，整條付費流程從第 2 步就走不下去。', {
+    x: 0.95, y: 2.38, w: 11.4, h: 0.55, fontFace: CJK, fontSize: 13, color: INK, lineSpacing: 20, margin: 0, isTextBox: true,
+  });
 
-// ============================================================ 31 TIER B + C
-{
-  const s = lightSlide();
-  head(s, { title: '明顯降級的，與會變好的', kicker: '遷移代價 ・ B 級與 C 級' });
-
-  s.addShape(pres.ShapeType.roundRect, { x: 0.6, y: 1.72, w: 5.9, h: 4.98, fill: { color: ORNGT }, rectRadius: 0.04 });
-  s.addText('B ・ 明顯降級', { x: 0.95, y: 1.95, w: 5.2, h: 0.36, fontFace: CJK, fontSize: 16, bold: true, color: ORNG, margin: 0, isTextBox: true });
-  s.addText('這才是真正的「犧牲」，可以接受但要先讓決策者知道', { x: 0.95, y: 2.32, w: 5.2, h: 0.3, fontFace: CJK, fontSize: 11, color: MUTE, margin: 0, isTextBox: true });
-  const bItems = [
-    ['B1', '底圖會「變空」', '步驟 8 那些地標、夜市是 Google 標的，OSM 商家類 POI 明顯稀疏，探索體驗下降。'],
-    ['B2', '中文標註不完整', 'OSM 台灣的 name:zh 覆蓋不一致，會出現中英夾雜的路名。'],
-    ['B3', '大眾運輸圖層要自己接', '公車站要改接公部門資料（例如 TDX），是額外的開發與維運。'],
-    ['B4', '導航跳轉沒有對等替代', '若目前是丟給 Google Maps App，換底圖後這個依賴其實沒有消失。'],
-    ['B5', '照片／評分／營業時間／電話', 'OSM 完全沒有對應資料。需先確認資料庫存了哪些欄位。'],
+  const chain = [
+    ['1', '餐廳新開幕', '最需要曝光、最願意付錢做導覽的時候。', INK],
+    ['2', 'ResoMap 搜不到', '因為 Google 上還沒有這個地點。', RED],
+    ['3', '先去登錄 Google 商家', '填資料、等審核、可能要驗證明信片。', INK],
+    ['4', '等 Google 通過', '數天到數週，而且不保證會過。', INK],
+    ['5', '才回來用 ResoMap', '如果那時候他還記得、還想付這筆錢。', INK],
   ];
-  bItems.forEach((it, i) => {
-    const y = 2.78 + i * 0.78;
-    s.addText(it[0], { x: 0.95, y, w: 0.5, h: 0.3, fontFace: NUM, fontSize: 11.5, bold: true, color: ORNG, margin: 0, isTextBox: true });
-    s.addText(it[1], { x: 1.5, y, w: 4.65, h: 0.3, fontFace: CJK, fontSize: 13, bold: true, color: INK, margin: 0, isTextBox: true });
-    s.addText(it[2], { x: 1.5, y: y + 0.3, w: 4.65, h: 0.46, fontFace: CJK, fontSize: 11, color: BODY, lineSpacing: 16, margin: 0, isTextBox: true });
+  chain.forEach((c, i) => {
+    const x = 0.6 + i * 2.44;
+    s.addShape(pres.ShapeType.roundRect, { x, y: 3.35, w: 2.26, h: 2.05, fill: { color: c[3] === RED ? REDT : TINT }, rectRadius: 0.04 });
+    s.addText(c[0], { x: x + 0.24, y: 3.52, w: 0.8, h: 0.3, fontFace: NUM, fontSize: 13, bold: true, color: c[3] === RED ? RED : TEAL, margin: 0, isTextBox: true });
+    s.addText(c[1], { x: x + 0.24, y: 3.86, w: 1.85, h: 0.62, fontFace: CJK, fontSize: 13, bold: true, color: c[3], lineSpacing: 19, margin: 0, isTextBox: true });
+    s.addText(c[2], { x: x + 0.24, y: 4.5, w: 1.85, h: 0.78, fontFace: CJK, fontSize: 10.5, color: MUTE, lineSpacing: 15, margin: 0, isTextBox: true });
   });
 
-  s.addShape(pres.ShapeType.roundRect, { x: 6.8, y: 1.72, w: 5.9, h: 4.98, fill: { color: 'E4EFE8' }, rectRadius: 0.04 });
-  s.addText('C ・ 會變好的', { x: 7.15, y: 1.95, w: 5.2, h: 0.36, fontFace: CJK, fontSize: 16, bold: true, color: '235F45', margin: 0, isTextBox: true });
-  s.addText('換過去的真正理由——但 ODbL 不等於無條件免費', { x: 7.15, y: 2.32, w: 5.2, h: 0.3, fontFace: CJK, fontSize: 11, color: MUTE, margin: 0, isTextBox: true });
-  const cItems = [
-    ['C1', '省錢', 'Places Text Search 通常是這類 App 帳單裡最貴的一項，而步驟 9 把它放在最高頻的路徑上。先把每月帳單與各 API 佔比拉出來，那個數字才是決策依據。'],
-    ['C2', '解掉一個現存的條款風險', 'Google 條款限制快取 Places 內容，也限制把 Google 資料顯示在非 Google 底圖上。目前這個 App 把 Google 的店名地址存進自家表、還當成付費商品的一部分販售——這件事值得法務看一眼。'],
-    ['C3', '但 OSM 是 ODbL，有 share-alike 義務', '若把 OSM 資料與自家資料合併成衍生資料庫，可能被要求以同樣授權釋出。換之前要先確認資料模型會不會落入這個範圍。'],
-  ];
-  cItems.forEach((it, i) => {
-    const y = 2.82 + i * 1.32;
-    s.addText(it[0], { x: 7.15, y, w: 0.5, h: 0.3, fontFace: NUM, fontSize: 11.5, bold: true, color: '235F45', margin: 0, isTextBox: true });
-    s.addText(it[1], { x: 7.7, y, w: 4.65, h: 0.3, fontFace: CJK, fontSize: 13, bold: true, color: INK, margin: 0, isTextBox: true });
-    s.addText(it[2], { x: 7.7, y: y + 0.3, w: 4.65, h: 0.95, fontFace: CJK, fontSize: 11, color: BODY, lineSpacing: 16, margin: 0, isTextBox: true });
-  });
-  foot(s, 'B 級是可接受的取捨，C 級是換過去的理由——但兩邊都要先有 A 級的答案才成立。');
-  s.addNotes('C2 是最容易被忽略的：目前的用法本身可能就有條款風險。');
+  problem(s, 0.6, 5.62, 12.1, 1.08, 'ResoMap 現在的獲客資格，是由 Google 決定的', [
+    '平台不能自己決定要服務誰——只能服務「已經被 Google 收錄的店」。而新開幕的店，正是最想曝光的客群。',
+  ], 'dead');
+  foot(s, '這是目前就在發生的商業損失，不是遷移之後才會有的風險。');
+  s.addNotes('這一頁是換 OSM 最有力的商業理由，比省錢更重要。');
 }
 
-// ============================================================ 32 QUESTIONS
+// ============================================================ 31 WHO IS BLOCKED
 {
   const s = lightSlide();
-  head(s, { title: '先問到答案，才做得出比對', kicker: '八個必須由工程師回覆的問題' });
+  head(s, { title: '現在有哪些客群進不來', kicker: '每一種都會踩到，不是邊緣情況' });
+  const cases = [
+    ['新開幕的店', 'Google 還沒收錄，最想曝光的客群反而被擋在門外。'],
+    ['夜市攤位、市場攤商、路邊小店', '很多根本不會出現在 Google Places。'],
+    ['改過名的店', 'Google 還是舊招牌，商家在 ResoMap 搜到的是自己的舊名字。'],
+    ['搬過家的店', '地址是舊的，帶進 ResoMap 的地址也跟著錯，而商家改不掉。'],
+    ['沒有店面的景點', '廟宇分殿、私人園區、步道涼亭、地方故事點位常常沒有。'],
+    ['Google 上重複或錯誤的 POI', '商家認領到錯的那一個，而平台沒有工具能修。'],
+  ];
+  cases.forEach((c, i) => {
+    const col = i % 2, row = Math.floor(i / 2);
+    const x = 0.6 + col * 6.2, y = 1.8 + row * 1.66;
+    s.addShape(pres.ShapeType.roundRect, { x, y, w: 5.9, h: 1.48, fill: { color: REDT }, rectRadius: 0.04 });
+    s.addText('✕', { x: x + 0.3, y: y + 0.24, w: 0.4, h: 0.35, fontFace: CJK, fontSize: 15, bold: true, color: RED, margin: 0, isTextBox: true });
+    s.addText(c[0], { x: x + 0.78, y: y + 0.24, w: 4.85, h: 0.36, fontFace: CJK, fontSize: 15, bold: true, color: INK, margin: 0, isTextBox: true });
+    s.addText(c[1], { x: x + 0.78, y: y + 0.68, w: 4.85, h: 0.62, fontFace: CJK, fontSize: 12, color: BODY, lineSpacing: 18, margin: 0, isTextBox: true });
+  });
+  foot(s, '這些正好是最需要語音導覽、也最沒有其他曝光管道的客群。');
+  s.addNotes('把「Google 不準」具體化成六種會實際發生的情況。');
+}
+
+// ============================================================ 32 OSM UPSIDE
+{
+  const s = lightSlide();
+  head(s, { title: '換 OSM 有哪些好處', kicker: '大部分不是變好一點，是從不可能變成可能' });
+  const bens = [
+    ['01', '可以自己建立地點', 'OSM 允許任何人新增節點。可以做成「搜不到 → 手動輸入 → 地圖選點 → 建立商家」，當場把人留住。'],
+    ['02', '新開的店當天就能上架', '不用等 Google 審核、不用等明信片驗證。開幕當天就能買訂閱、上傳語音。'],
+    ['03', '資料錯了可以自己修', '店名改了、搬家了、少了門牌，平台自己就能改，客服終於有工具處理。'],
+    ['04', '沒有查詢配額與費用壓力', 'Places Text Search 是帳單最貴的一項，又在最高頻路徑上。沒有計費壓力後，搜尋能做得更好用。'],
+    ['05', '資料可以合法留在自己手上', 'Google 條款限制快取 Places 內容、也限制顯示在非 Google 底圖上。目前的用法值得法務看一眼。'],
+    ['06', '商家補的資料變成平台資產', '累積下來就是一份 Google 沒有的在地 POI 庫——攤商、小店、地方景點，正好是 Google 覆蓋最差的類別。'],
+  ];
+  bens.forEach((b, i) => {
+    const col = i % 3, row = Math.floor(i / 3);
+    const x = 0.6 + col * 4.07, y = 1.78 + row * 1.72;
+    s.addShape(pres.ShapeType.roundRect, { x, y, w: 3.77, h: 1.55, fill: { color: 'E4EFE8' }, rectRadius: 0.04 });
+    s.addText(b[0], { x: x + 0.28, y: y + 0.18, w: 1, h: 0.28, fontFace: NUM, fontSize: 11, bold: true, color: '235F45', margin: 0, isTextBox: true });
+    s.addText(b[1], { x: x + 0.28, y: y + 0.46, w: 3.25, h: 0.34, fontFace: CJK, fontSize: 13.5, bold: true, color: INK, margin: 0, isTextBox: true });
+    s.addText(b[2], { x: x + 0.28, y: y + 0.82, w: 3.25, h: 0.66, fontFace: CJK, fontSize: 10.5, color: BODY, lineSpacing: 15, margin: 0, isTextBox: true });
+  });
+  const warns = [
+    ['OSM 的弱項要誠實承認', '台灣道路與門牌不差，弱的是商家 POI 與部分中文標註。底圖會比 Google 空、公車站圖層要自己接、導航跳轉沒有對等替代。但商家 POI 正好是 01、06 可以自己補的。'],
+    ['ODbL 不等於無條件免費', 'OSM 採 ODbL，有 share-alike 義務。若把 OSM 資料與自家資料合併成衍生資料庫，可能被要求以同樣授權釋出。換之前要先確認資料模型。'],
+  ];
+  warns.forEach((w, i) => {
+    const x = 0.6 + i * 6.2;
+    s.addShape(pres.ShapeType.roundRect, { x, y: 5.28, w: 5.9, h: 1.42, fill: { color: ORNGT }, rectRadius: 0.04 });
+    s.addText('注意　' + w[0], { x: x + 0.3, y: 5.44, w: 5.3, h: 0.32, fontFace: CJK, fontSize: 13, bold: true, color: ORNG, margin: 0, isTextBox: true });
+    s.addText(w[1], { x: x + 0.3, y: 5.78, w: 5.3, h: 0.8, fontFace: CJK, fontSize: 10.5, color: BODY, lineSpacing: 15, margin: 0, isTextBox: true });
+  });
+  foot(s, '好處集中在「搜不到就自己建」這一件事上——它把一條目前完全走不通的路打開。');
+  s.addNotes('01 是最大的一項，其他都是它的延伸。');
+}
+
+// ============================================================ 33 QUESTIONS
+{
+  const s = lightSlide();
+  head(s, { title: '從前台無法確認、需要工程師回覆的', kicker: '前一版列了八題，逐步標記之後只剩四題' });
   const qs = [
-    ['01', '景點的主鍵是 Google place_id，還是自家 UUID？', '決定整件事是「換套件」還是「搬資料庫」，量級差一個數量級。', true],
-    ['02', '名稱與地址是存起來，還是每次即時打 API？', '存起來牽涉 Google 條款的快取限制；即時打牽涉每筆請求費用。', true],
-    ['03', '搜尋框搜的是 Google Places，還是自家景點資料庫？', '步驟 9 搜到店時它還沒有語音，看起來是搜 Google。', true],
-    ['04', '「顯示周邊景點」打 Nearby Search，還是查自家 DB？', '後者幾乎零遷移成本，前者要重做。', false],
-    ['05', '目前每月 Google Maps 帳單多少？哪一支 API 佔比最高？', '如果省下的錢遠小於遷移工時，這個提案本身就不成立。', false],
-    ['06', '地圖圖示點下去，是跳 Google Maps App 還是內嵌？', '若是跳轉，即使底圖換成 OSM，這個依賴其實沒有消失。', false],
-    ['07', '資料庫裡除了名稱和地址，還存了哪些 Places 欄位？', '照片、評分、營業時間、電話——OSM 都沒有等價來源。', false],
-    ['08', '存下來的 Google 資料保留多久？有沒有做定期清除？', '這題是給法務的。若是「一直留著」，換 OSM 就不只是省錢。', false],
+    ['01', '第 2 步的搜尋框，打的是 Google Places 還是自家景點資料庫？',
+      '實測時搜到的店還沒有任何語音內容，看起來是 Google。確認後第 2、3 步的判斷才算定案。', true],
+    ['02', '第 11 步的認領，綁定的是 Google place_id 還是自家 ID？',
+      '這是主鍵那一題唯一真正落地的地方。綁自家 ID 就只是換搜尋來源；綁 place_id 才要重新對應。', true],
+    ['03', '店名與地址是搜尋當下存進資料庫，還是每次即時打 API？',
+      '存起來的話舊資料可以原地保留，只有新建的走 OSM；即時打的話換掉當天全部景點一起變。', false],
+    ['04', '首頁的「顯示周邊景點」打 Nearby Search，還是查自家座標範圍？',
+      '後者幾乎零遷移成本，前者要重做。這是除了搜尋以外唯一可能還藏著 Google 呼叫的地方。', false],
   ];
   qs.forEach((q, i) => {
-    const col = i % 2, row = Math.floor(i / 2);
-    const x = 0.6 + col * 6.2, y = 1.75 + row * 1.26;
+    const y = 1.8 + i * 1.24;
     s.addShape(pres.ShapeType.roundRect, {
-      x, y, w: 5.9, h: 1.12, fill: { color: q[3] ? REDT : TINT }, rectRadius: 0.04,
+      x: 0.6, y, w: 12.1, h: 1.1, fill: { color: q[3] ? REDT : TINT }, rectRadius: 0.04,
     });
-    s.addText(q[0], {
-      x: x + 0.28, y: y + 0.16, w: 0.52, h: 0.3, fontFace: NUM, fontSize: 13, bold: true,
-      color: q[3] ? RED : MUTE, margin: 0, isTextBox: true,
-    });
-    s.addText(q[1], {
-      x: x + 0.85, y: y + 0.14, w: 4.8, h: 0.5, fontFace: CJK, fontSize: 12.5, bold: true,
-      color: INK, lineSpacing: 18, margin: 0, isTextBox: true,
-    });
-    s.addText(q[2], {
-      x: x + 0.85, y: y + 0.62, w: 4.8, h: 0.42, fontFace: CJK, fontSize: 10.5,
-      color: MUTE, lineSpacing: 15, margin: 0, isTextBox: true,
-    });
+    s.addText(q[0], { x: 0.92, y: y + 0.2, w: 0.6, h: 0.34, fontFace: NUM, fontSize: 15, bold: true, color: q[3] ? RED : MUTE, margin: 0, isTextBox: true });
+    s.addText(q[1], { x: 1.62, y: y + 0.18, w: 10.8, h: 0.36, fontFace: CJK, fontSize: 15, bold: true, color: INK, margin: 0, isTextBox: true });
+    s.addText(q[2], { x: 1.62, y: y + 0.6, w: 10.8, h: 0.36, fontFace: CJK, fontSize: 11.5, color: MUTE, margin: 0, isTextBox: true });
   });
-  foot(s, '紅底三題是前提：沒有這三個答案，任何遷移估算都是猜的。');
-  s.addNotes('把這八題直接貼到群組，比繼續討論 OSM 好不好用有效得多。');
+  foot(s, '紅底兩題是前提：只要這兩題有答案，遷移範圍就能算得出來。');
+  s.addNotes('題數從八題收斂到四題，是因為逐步標記排除了大部分不確定性。');
 }
 
-// ============================================================ 33 THE REAL QUESTION
+// ============================================================ 34 CLOSING
 {
   const s = darkSlide();
-  s.addText('這個比對的順序被搞反了', {
-    x: 0.85, y: 0.75, w: 11.6, h: 0.6, fontFace: CJK, fontSize: 30, bold: true,
-    color: 'FFFFFF', margin: 0, isTextBox: true,
+  s.addText('結論', {
+    x: 0.85, y: 0.78, w: 11.6, h: 0.4, fontFace: CJK, fontSize: 13, bold: true,
+    color: 'E09A50', charSpacing: 2.5, margin: 0, isTextBox: true,
   });
-  s.addText('該先回答的不是「換 OSM 會犧牲什麼」，而是「這個 App 到底把地圖當成什麼」。', {
-    x: 0.85, y: 1.45, w: 11.6, h: 0.35, fontFace: CJK, fontSize: 14,
-    color: 'A8B4C2', margin: 0, isTextBox: true,
+  s.addText('ResoMap 真正的產品是語音導覽，\n地點只是掛語音的鉤子。', {
+    x: 0.85, y: 1.32, w: 11.6, h: 1.7, fontFace: CJK, fontSize: 34, bold: true,
+    color: 'FFFFFF', lineSpacing: 50, margin: 0, isTextBox: true,
   });
-  const forks = [
-    ['情境一', '地圖只是「找到景點的介面」', '景點資料是你們自己的，地圖只負責顯示。\n那 OSM 完全夠用，遷移是一次前端工作，\n上面 A 級的風險大部分不存在。', '5FBDB2'],
-    ['情境二', '地圖是「景點資料的來源」', '景點是從 Google Places 長出來的。\n那這不是換底圖的問題，是整個資料模型\n建立在別人家的資料上，而且還拿它收費。', 'E08A7A'],
+  const blocks = [
+    ['不會變的', '訂閱、圖片、文案、語音、送審、審核、認領、上架——這九步是 ResoMap 的商業流程，換地圖服務動不到它們。', '5FBDB2'],
+    ['會變的', '只有「怎麼找到或建立一個地點」這件事。底圖會空一點、地址品質要靠自己補、要新增一個手動建立地點的流程。', 'E09A50'],
+    ['換來的', '「搜不到就自己建」——把一條目前完全走不通的路打開。新開幕的店、夜市攤位、地方景點，終於收得了。', 'E08A7A'],
   ];
-  forks.forEach((f, i) => {
-    const x = 0.85 + i * 5.95;
-    s.addShape(pres.ShapeType.roundRect, { x, y: 2.05, w: 5.6, h: 2.35, fill: { color: DARK2 }, rectRadius: 0.04 });
-    s.addText(f[0], { x: x + 0.35, y: 2.25, w: 2, h: 0.3, fontFace: CJK, fontSize: 11, bold: true, color: f[3], charSpacing: 2, margin: 0, isTextBox: true });
-    s.addText(f[1], { x: x + 0.35, y: 2.62, w: 4.9, h: 0.4, fontFace: CJK, fontSize: 16, bold: true, color: 'FFFFFF', margin: 0, isTextBox: true });
-    s.addText(f[2], { x: x + 0.35, y: 3.12, w: 4.9, h: 1.1, fontFace: CJK, fontSize: 12, color: 'AAB6C4', lineSpacing: 19, margin: 0, isTextBox: true });
+  blocks.forEach((b, i) => {
+    const x = 0.85 + i * 3.95;
+    s.addShape(pres.ShapeType.roundRect, { x, y: 3.4, w: 3.6, h: 2.15, fill: { color: DARK2 }, rectRadius: 0.04 });
+    s.addText(b[0], { x: x + 0.32, y: 3.6, w: 2.9, h: 0.32, fontFace: CJK, fontSize: 12, bold: true, color: b[2], charSpacing: 2, margin: 0, isTextBox: true });
+    s.addText(b[1], { x: x + 0.32, y: 4.02, w: 2.96, h: 1.35, fontFace: CJK, fontSize: 12, color: 'C4CEDA', lineSpacing: 20, margin: 0, isTextBox: true });
   });
-  s.addShape(pres.ShapeType.roundRect, { x: 0.85, y: 4.7, w: 11.6, h: 1.95, fill: { color: DARK2 }, rectRadius: 0.04 });
-  s.addText([
-    { text: '從步驟 9 → 10 看，很可能是情境二。', options: { bold: true, color: 'E08A7A', breakLine: true } },
-    { text: '', options: { fontSize: 8, breakLine: true } },
-    { text: '如果是這樣，換 OSM 犧牲的不是功能，是「你們原本不用自己建資料」這件事——', options: { bold: true, color: 'FFFFFF', breakLine: true } },
-    { text: '要算的是資料工程與內容補齊，不是前端換個圖層。', options: { bold: true, color: 'FFFFFF' } },
-  ], {
-    x: 1.25, y: 4.95, w: 10.8, h: 1.0, fontFace: CJK, fontSize: 15, lineSpacing: 26, margin: 0, isTextBox: true,
+  s.addShape(pres.ShapeType.roundRect, { x: 0.85, y: 5.78, w: 11.6, h: 0.92, fill: { color: '3A2420' }, rectRadius: 0.04 });
+  s.addText('目前把「找到地點」外包給 Google 的代價，不是底圖好不好看，是平台不能決定自己要服務誰。', {
+    x: 1.25, y: 5.98, w: 10.8, h: 0.5, fontFace: CJK, fontSize: 15, bold: true,
+    color: 'F0A99A', margin: 0, isTextBox: true, valign: 'middle',
   });
-  s.addText('這跟訂閱流程稽核發現的是同一個病灶：訂閱綁帳號、內容綁景點、景點綁 Google——三層之間沒有一層是自己接起來的。', {
-    x: 0.85, y: 6.85, w: 11.6, h: 0.35, fontFace: CJK, fontSize: 12.5, bold: true,
-    color: 'E09A50', margin: 0, isTextBox: true,
+  s.addText('本版依陳醫師的方法重做，取代第一版以「主鍵風險」為主軸的框架。', {
+    x: 0.85, y: 6.88, w: 11.6, h: 0.32, fontFace: CJK, fontSize: 11.5,
+    color: '8B98A6', margin: 0, isTextBox: true,
   });
-  s.addNotes('地圖只是這條鏈上最外面、也最容易被看見的一環。');
+  s.addNotes('收在商業層面：這不是技術偏好問題，是能不能服務客戶的問題。');
 }
 
 pres.writeFile({ fileName: path.join(__dirname, 'ResoMap商家訂閱流程稽核.pptx') })
