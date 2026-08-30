@@ -238,7 +238,7 @@ const index = `<!doctype html>
     <h2>下載與原始檔</h2>
     <div class="files">
       <a class="file" href="${REPO}/raw/main/deck/ResoMap-subscription-redesign.pptx">
-        <b>訂閱模式改版提案（19 頁）</b><span>扣點數模型、流程改版、Google 版與 OSM 版各一套</span><span class="tag">PPTX</span>
+        <b>訂閱模式改版提案（26 頁）</b><span>扣點數模型、逐步圖文對照、Google 版與 OSM 版各一套</span><span class="tag">PPTX</span>
       </a>
       <a class="file" href="${REPO}/raw/main/deck/ResoMap-flow-audit.pptx">
         <b>流程稽核簡報（34 頁）</b><span>21 步圖文對照，含地圖服務評估附錄</span><span class="tag">PPTX</span>

@@ -341,10 +341,243 @@ section('B', '流程改版', '最大的一項改動：認領要從第 11 步往�
   s.addNotes('九步裡有八步兩版完全一樣。');
 }
 
+// ---- before/after comparison helper -------------------------------------
+function phoneAt(s, img, x, y, h) {
+  const w = h * (560 / 1214);
+  s.addImage({ path: IMG(img), x, y, w, h, shadow: sh() });
+  return w;
+}
+
+function compare(s, o) {
+  const H = 4.5, PW = H * (560 / 1214);   // 2.076
+  const xA = 0.72, xB = 3.42;
+  phoneAt(s, o.before, xA, 1.72, H);
+  phoneAt(s, o.after, xB, 1.72, H);
+  // arrow between the two phones
+  s.addText('→', {
+    x: xA + PW + 0.06, y: 3.72, w: 0.52, h: 0.5, align: 'center', valign: 'middle',
+    fontFace: NUM, fontSize: 24, bold: true, color: MUTE, margin: 0, isTextBox: true,
+  });
+  s.addText(o.labelA || '現況', {
+    x: xA - 0.3, y: 6.3, w: PW + 0.6, h: 0.3, align: 'center', fontFace: CJK, fontSize: 11.5,
+    bold: true, color: o.labelAColor || RED, margin: 0, isTextBox: true,
+  });
+  s.addText(o.labelB || '改良後', {
+    x: xB - 0.3, y: 6.3, w: PW + 0.6, h: 0.3, align: 'center', fontFace: CJK, fontSize: 11.5,
+    bold: true, color: o.labelBColor || TEAL, margin: 0, isTextBox: true,
+  });
+  if (o.capA) s.addText(o.capA, { x: xA - 0.35, y: 6.58, w: PW + 0.7, h: 0.3, align: 'center', fontFace: CJK, fontSize: 9.5, color: MUTE, margin: 0, isTextBox: true });
+  if (o.capB) s.addText(o.capB, { x: xB - 0.35, y: 6.58, w: PW + 0.7, h: 0.3, align: 'center', fontFace: CJK, fontSize: 9.5, color: MUTE, margin: 0, isTextBox: true });
+
+  const X = 6.05, W2 = 6.65;
+  card(s, X, 1.72, W2, o.hBad || 1.95, o.badTitle, o.bad, REDT, RED);
+  card(s, X, 1.72 + (o.hBad || 1.95) + 0.16, W2, o.hGood || 2.72, o.goodTitle, o.good, TEALT, TEAL);
+  const yLast = 1.72 + (o.hBad || 1.95) + 0.16 + (o.hGood || 2.72) + 0.16;
+  const hWhy = Math.max(0.6, 6.7 - yLast);
+  s.addShape(pres.ShapeType.roundRect, { x: X, y: yLast, w: W2, h: hWhy, fill: { color: o.whyBg || 'FFF3E0' }, rectRadius: 0.04 });
+  s.addText('順在哪　' + o.why, {
+    x: X + 0.32, y: yLast, w: W2 - 0.64, h: hWhy, fontFace: CJK, fontSize: 12.5,
+    bold: true, color: o.whyColor || '9A5A18', valign: 'middle', lineSpacing: 19, margin: 0, isTextBox: true,
+  });
+}
+
+// ============================================================ C1 訂閱頁
+{
+  const s = lightSlide();
+  head(s, { num: '1', kicker: '步驟 1　訂閱／儲值', title: '訂閱頁要看得到自己買了什麼', color: TEAL });
+  compare(s, {
+    before: 's06', after: 'm1',
+    capA: '只有一行方案名稱', capB: '席位、點數、扣款日、待辦',
+    hBad: 1.75, hGood: 2.2,
+    badTitle: '現況：整頁只有一行字', bad: [
+      '「訂閱方案　專業版 (3 點)」＋ 兩顆按鈕，其餘全空白。',
+      '不知道用掉幾個席位、不知道還剩幾個，',
+      '沒有到期日、沒有下次扣款日、沒有試用剩餘天數。',
+    ],
+    goodTitle: '改良：一頁看完自己的狀態', good: [
+      '・席位進度條「已使用 1 ／ 3」，一眼看懂',
+      '・加值點數餘額 ＋ 儲值入口',
+      '・下次扣款日與金額寫清楚',
+      '・「你還有 2 個席位沒用」主動提醒，點了直接進下一步',
+      '・下面直接列出「我的景點」，不必回地圖搜自己的店',
+    ],
+    why: '商家打開這一頁，就知道自己買了什麼、用到哪、接下來該做什麼。',
+  });
+  foot(s, '這一頁同時解掉「點數從未被顯示」與「找不到自己的店」兩個問題。');
+  s.addNotes('訂閱頁是商家最常回來看的地方，資訊密度要夠。');
+}
+
+// ============================================================ C2 付款成功
+{
+  const s = lightSlide();
+  head(s, { num: '1', kicker: '步驟 1 → 2　付款完成的那一秒', title: '付完錢，要立刻告訴他下一步', color: TEAL });
+  compare(s, {
+    before: 's05', after: 'm2',
+    capA: '系統彈窗，按「好」就結束', capB: '完成頁 ＋ 三步驟預告 ＋ CTA',
+    hBad: 1.55, hGood: 2.0,
+    badTitle: '現況：按完「好」回到方案列表', bad: [
+      '沒有歡迎頁、沒有待辦清單、沒有「接下來要做什麼」。',
+      '漏斗最貴、意願最高的那一格被完全浪費。',
+    ],
+    goodTitle: '改良：專屬的完成頁', good: [
+      '・「訂閱完成 · 你有 3 個景點席位」',
+      '・預告接下來三步：找到你的店 → 認領 → 上傳語音',
+      '・一顆大按鈕「開始：找到我的店」直接帶走',
+      '・想晚點再弄的人可以按「稍後再說」，不強迫',
+    ],
+    why: '把漏斗最貴的那一格接起來——付完錢的下一秒就知道要幹嘛，不用自己回地圖亂找。',
+  });
+  foot(s, '同時發第 1 則推播，讓關掉 App 的人也接得回來。');
+  s.addNotes('這是轉換率影響最大的一頁。');
+}
+
+// ============================================================ C3 找店 Google
+{
+  const s = lightSlide();
+  head(s, { num: '2', kicker: '步驟 2　找到我的店（Google 版）', title: '別把商家丟回公用地圖', color: GOO });
+  compare(s, {
+    before: 's08', after: 'm3',
+    capA: '回到首頁地圖，跟付費前一樣', capB: '專屬的搜尋頁 ＋ 認領按鈕',
+    hBad: 1.6, hGood: 1.8,
+    badTitle: '現況：付費前後的地圖一模一樣', bad: [
+      '沒有自動定位、沒有「我的景點」入口、pin 沒有差別待遇。',
+      '商家只能自己捲地圖，或用跟路人一樣的搜尋框打字找自己。',
+    ],
+    goodTitle: '改良：付款後直接進「找到我的店」', good: [
+      '・專門的搜尋頁，不是公用地圖',
+      '・每筆結果旁邊就是「這是我的店」按鈕',
+      '・搜不到時明確說明原因，並提供留線索的表單',
+    ],
+    why: '流程順了，但天花板還在：Google 沒收錄的店還是進不來。',
+    whyBg: REDT, whyColor: RED,
+  });
+  foot(s, 'Google 版能做的優化到此為止——下一頁是 OSM 版怎麼把這條路打開。');
+  s.addNotes('Google 版流程可以改順，但服務範圍的天花板拆不掉。');
+}
+
+// ============================================================ C4 找店 OSM
+{
+  const s = lightSlide();
+  head(s, { num: '2', kicker: '步驟 2　找到我的店（OSM 版）', title: '搜不到，就讓他自己建', color: OSM });
+  compare(s, {
+    before: 'm4', after: 'm5',
+    labelA: '搜不到時', labelAColor: OSM, labelB: '手動建立地點', labelBColor: OSM,
+    capA: '出現綠色「自己建」的出口', capB: '店名、地址、地圖選點、類別',
+    hBad: 1.55, hGood: 2.45,
+    badTitle: 'Google 版在這裡就斷了', bad: [
+      '「沒有找到好味小館」——然後就沒有然後了。',
+      '商家只能先去登錄 Google 商家，等審核，再回來。',
+    ],
+    goodTitle: 'OSM 版：多一個出口，流程不會斷', good: [
+      '・店名（必填）',
+      '・地址：用逆地理編碼預填，商家可以自己改',
+      '・地圖選點：拖大頭針，這是最關鍵的一欄',
+      '・類別：餐飲／旅宿／零售／景點',
+      '・營業時間、電話（選填）',
+      '・建立完直接進認領，不用重新搜尋一次',
+    ],
+    why: '新開幕的餐廳、夜市攤位、市場攤商、沒有店面的景點——當天就能上架。',
+    whyBg: 'E3F0E8', whyColor: OSM,
+  });
+  foot(s, '新建地點的審核直接併進第 4 步的認領驗證一起看，不必多一道關卡。');
+  s.addNotes('這一頁是 OSM 版唯一真正新增的畫面。');
+}
+
+// ============================================================ C5 認領申請
+{
+  const s = lightSlide();
+  head(s, { num: '3', kicker: '步驟 3　認領這間店', title: '認領要在做內容之前，不是之後', color: TEAL });
+  compare(s, {
+    before: 's18', after: 'm6',
+    capA: '第 11 步，而且按了會報錯', capB: '第 3 步，說清楚會扣什麼',
+    hBad: 1.75, hGood: 2.0,
+    badTitle: '現況：排在第 11 步，還自相矛盾', bad: [
+      '畫面說「目前未被認領」，按鈕是亮的可以點，',
+      '按下去卻跳「該景點目前不可被認領」。',
+      '而且要等後台有人手動撥開關，商家完全不知道撥了沒。',
+    ],
+    goodTitle: '改良：往前移到第 3 步', good: [
+      '・先講清楚「認領成功後會使用 1 個席位」',
+      '・上傳營業登記或店面照片擇一，門檻不高',
+      '・寫明「1 個工作天內確認」，不再是黑箱',
+      '・不通過會說原因，可以補件重送',
+    ],
+    why: '所有權先確立再投入內容，扣點時機明確，矛盾畫面自然消失。',
+  });
+  foot(s, '這是整份提案裡最大的一項流程改動，而且跟地圖服務無關。');
+  s.addNotes('認領前移是解掉死路的關鍵。');
+}
+
+// ============================================================ C6 審核中
+{
+  const s = lightSlide();
+  head(s, { num: '7', kicker: '步驟 7　送審之後', title: '上傳的東西不能就這樣消失', color: TEAL });
+  compare(s, {
+    before: 's16', after: 'm7',
+    capA: '剛上傳成功，卻顯示「尚無語音導覽」', capB: '審核中卡片 ＋ 預計時間',
+    hBad: 1.75, hGood: 2.0,
+    badTitle: '現況：剛送出的東西不見了', bad: [
+      '上傳成功後回到景點頁，列表寫「尚無語音導覽」。',
+      '後台看得到，商家自己的畫面上卻沒有任何痕跡——',
+      '使用者無法分辨「審核中」和「上傳失敗」，就會重傳。',
+    ],
+    goodTitle: '改良：狀態一直看得見', good: [
+      '・「審核中」卡片，標示送審日期與進度',
+      '・寫明「預計 1 個工作天內完成，通過會通知你」',
+      '・已上架的那則顯示播放次數，看得到成果',
+      '・下方順勢推「想再多做幾則？」帶出加值點數',
+    ],
+    why: '不會有人以為失敗而重傳，也不用一直回來刷新看好了沒。',
+  });
+  foot(s, '這一步會直接減少重複上傳與客服工單。');
+  s.addNotes('狀態可見性是最便宜、感受最強的改動之一。');
+}
+
+// ============================================================ C7 儀表板
+{
+  const s = lightSlide();
+  head(s, { num: '9', kicker: '步驟 9　上架之後', title: '給他一個續訂的理由', color: TEAL });
+  phoneAt(s, 'm9', 0.75, 1.72, 4.5);
+  s.addText('改良後：商家儀表板', { x: 0.45, y: 6.3, w: 2.68, h: 0.3, align: 'center', fontFace: CJK, fontSize: 11.5, bold: true, color: TEAL, margin: 0, isTextBox: true });
+  s.addText('目前這一頁完全不存在', { x: 0.4, y: 6.58, w: 2.78, h: 0.3, align: 'center', fontFace: CJK, fontSize: 9.5, color: MUTE, margin: 0, isTextBox: true });
+
+  card(s, 3.55, 1.72, 4.4, 2.3, '現況：商家看不到任何數字', [
+    '語音上架之後，商家不知道有沒有人聽、',
+    '聽了多久、什麼時候聽的。',
+    '',
+    '續訂的時候，他沒有任何依據判斷',
+    '這 $3,800 值不值得。',
+  ], REDT, RED);
+  card(s, 3.55, 4.18, 4.4, 2.52, '改良：把成效還給商家', [
+    '・播放次數、完聽率、被收藏數',
+    '・來客時段分布（幾點的人在聽）',
+    '・席位與點數餘額就在同一頁',
+    '・兩顆按鈕：新增語音 ／ 買曝光',
+  ], TEALT, TEAL);
+
+  card(s, 8.3, 1.72, 4.4, 2.3, '這頁是續訂的答案', [
+    '「上個月 1,284 次播放、68% 完聽率」——',
+    '這句話才能支撐明年再付一次錢。',
+    '',
+    '沒有數據的訂閱，續訂率只能靠運氣。',
+  ], TEALT, TEAL);
+  card(s, 8.3, 4.18, 4.4, 2.52, '也是加值點數的銷售入口', [
+    '看到「12 點和 18 點的人最多」，',
+    '商家自然會想在那個時段買曝光。',
+    '',
+    '看到完聽率高，就會想再多做幾則。',
+    '',
+    '數據是最好的加購理由。',
+  ], ORNGT, ORNG);
+  foot(s, '席位負責「進場」，數據負責「續訂」，加值點數負責「持續消費」。');
+  s.addNotes('這頁把商業模式跟產品體驗接起來。');
+}
+
 // ============================================================ 11 NOTIFICATIONS
 {
   const s = lightSlide();
   head(s, { title: '通知：從 0 則變成 5 則', kicker: '目前全程零通知，商家只能反覆回訪碰運氣', color: ORNG });
+  s.addImage({ path: IMG('m8'), x: 0.6, y: 1.78, w: 2.4, h: 5.2, shadow: sh() });
   const notes = [
     ['付款成功', '「你有 1 個席位可以使用。下一步：找到你的店」＋ 直接跳轉按鈕', '取代目前按完「好」就沒事發生'],
     ['認領通過／退回', '「香記烤鴨 已通過認領」／「需要補件：照片看不到招牌」', '目前商家完全不知道後台開關撥了沒'],
@@ -354,12 +587,12 @@ section('B', '流程改版', '最大的一項改動：認領要從第 11 步往�
   ];
   notes.forEach((n, i) => {
     const y = 1.8 + i * 1.0;
-    s.addShape(pres.ShapeType.roundRect, { x: 0.6, y, w: 12.1, h: 0.88, fill: { color: i % 2 ? TINT : 'FAFBFC' }, rectRadius: 0.04 });
-    s.addShape(pres.ShapeType.ellipse, { x: 0.9, y: y + 0.24, w: 0.4, h: 0.4, fill: { color: ORNG } });
-    s.addText(String(i + 1), { x: 0.9, y: y + 0.24, w: 0.4, h: 0.4, align: 'center', valign: 'middle', fontFace: NUM, fontSize: 11.5, bold: true, color: 'FFFFFF', margin: 0, isTextBox: true });
-    s.addText(n[0], { x: 1.45, y, w: 2.1, h: 0.88, fontFace: CJK, fontSize: 13.5, bold: true, color: INK, valign: 'middle', margin: 0, isTextBox: true });
-    s.addText(n[1], { x: 3.6, y, w: 5.6, h: 0.88, fontFace: CJK, fontSize: 11.5, color: BODY, valign: 'middle', lineSpacing: 17, margin: 0, isTextBox: true });
-    s.addText(n[2], { x: 9.35, y, w: 3.2, h: 0.88, fontFace: CJK, fontSize: 10.5, color: RED, valign: 'middle', lineSpacing: 15, margin: 0, isTextBox: true });
+    s.addShape(pres.ShapeType.roundRect, { x: 3.25, y, w: 9.45, h: 0.88, fill: { color: i % 2 ? TINT : 'FAFBFC' }, rectRadius: 0.04 });
+    s.addShape(pres.ShapeType.ellipse, { x: 3.5, y: y + 0.24, w: 0.4, h: 0.4, fill: { color: ORNG } });
+    s.addText(String(i + 1), { x: 3.5, y: y + 0.24, w: 0.4, h: 0.4, align: 'center', valign: 'middle', fontFace: NUM, fontSize: 11.5, bold: true, color: 'FFFFFF', margin: 0, isTextBox: true });
+    s.addText(n[0], { x: 4.05, y, w: 1.85, h: 0.88, fontFace: CJK, fontSize: 12.5, bold: true, color: INK, valign: 'middle', margin: 0, isTextBox: true });
+    s.addText(n[1], { x: 5.95, y, w: 4.35, h: 0.88, fontFace: CJK, fontSize: 10.5, color: BODY, valign: 'middle', lineSpacing: 15, margin: 0, isTextBox: true });
+    s.addText(n[2], { x: 10.45, y, w: 2.2, h: 0.88, fontFace: CJK, fontSize: 9.5, color: RED, valign: 'middle', lineSpacing: 13, margin: 0, isTextBox: true });
   });
   foot(s, '右欄是目前的狀況。四個關鍵狀態變化，商家現在收到 0 則通知。');
   s.addNotes('通知是最便宜、感受最強的一項改動。');

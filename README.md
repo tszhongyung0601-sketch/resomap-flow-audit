@@ -52,13 +52,14 @@ reports/
   01-subscription-flow-audit.html      21 步實測全紀錄 + 問題清單與責任歸屬
   02-map-migration-assessment.html     Google Maps → OSM 遷移評估
 deck/
-  ResoMap-subscription-redesign.pptx   19 頁提案（扣點數模型、流程改版、Google／OSM 兩版）
+  ResoMap-subscription-redesign.pptx   26 頁提案（扣點數模型、逐步圖文對照、Google／OSM 兩版）
   ResoMap-flow-audit.pptx              34 頁稽核簡報（圖文對照，含地圖評估附錄）
 evidence/
   第一步…第二十一步驟*.png/jpg          原始實測截圖 21 張（含後台 2 張）
 build/
   deck.js                              稽核簡報產生器（pptxgenjs）
   deck2.js                             改版提案簡報產生器
+  mock.js                              改良後畫面的 mockup 產生器（SVG → PNG）
   prep*.js                             截圖裁切／縮放腳本（sharp）
   pages.js                             把 reports/ 包成可獨立開啟的網頁並產生 docs/
   img/                                 處理後的圖檔（deck.js 直接引用）
@@ -199,7 +200,9 @@ node build/pages.js
 
 ## 訂閱模式改版提案
 
-`deck/ResoMap-subscription-redesign.pptx`（19 頁）。為 2026/08/29 會議準備，涵蓋 Jay 提的「改成扣點數」與「Google／OSM 兩邊都要」。
+`deck/ResoMap-subscription-redesign.pptx`（26 頁）。為 2026/08/29 會議準備，涵蓋 Jay 提的「改成扣點數」與「Google／OSM 兩邊都要」。
+
+包含 7 頁**逐步圖文對照**：左邊是實測截圖的現況，右邊是改良後的畫面 mockup（`build/mock.js` 產生），逐步說明每一步為什麼這樣改會比較順。
 
 ### 一、扣點數模型：先確認是哪一種
 
@@ -220,6 +223,20 @@ node build/pages.js
 改良：訂閱／儲值 → 找到我的店 → **認領申請 → 驗證通過 → 扣 1 席位** → 建立內容 → 送審 → 審核通過 → 自動上架
 
 理由：認領是所有權宣告，要在投入內容成本之前完成；扣點時機也因此明確；第 18 步那個「未被認領 ＋ 按了說不可認領」的死路自然消失。
+
+### 逐步圖文對照（簡報第 11–17 頁）
+
+| 步驟 | 現況 | 改良後 |
+|---|---|---|
+| 1　訂閱頁 | 整頁只有一行「專業版 (3 點)」 | 席位進度條、點數餘額、扣款日、未使用席位提醒、我的景點清單 |
+| 1→2　付款完成 | 系統彈窗按「好」回到方案列表 | 完成頁 ＋ 三步驟預告 ＋「開始：找到我的店」 |
+| 2　找店（Google） | 回到首頁地圖，跟付費前一模一樣 | 專屬搜尋頁，每筆結果旁邊就是「這是我的店」 |
+| 2　找店（OSM） | — | 搜不到 → 手動建立地點（店名／地址／地圖選點／類別）→ 直接認領 |
+| 3　認領 | 排在第 11 步，按了還報錯 | 移到第 3 步，說明會扣 1 席位、上傳證明、1 個工作天內確認 |
+| 7　送審後 | 顯示「尚無語音導覽」，東西不見了 | 「審核中」卡片 ＋ 送審日期 ＋ 預計時間 ＋ 進度 |
+| 9　上架後 | 商家看不到任何數字 | 播放數、完聽率、被收藏、來客時段、席位與點數 |
+
+改良後的畫面為 mockup，非實作截圖；產生器在 `build/mock.js`。
 
 通知從 0 則增加到 5 則：付款成功、認領通過／退回、審核通過、審核退回、到期前 7 天。
 
